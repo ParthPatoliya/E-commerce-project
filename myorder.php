@@ -75,7 +75,7 @@ $num4 = mysqli_num_rows($ress);
                             } else if ($row['is_cancel'] == 1) {
                             } else if ($row['is_cancel'] == 0) {
                                 // if ($row14['is_replace'] == null) {
-                                    echo '<th><a href="salesReplace.php?orderid=' . $row['idSales_Order'] . '" >
+                                echo '<th><a href="salesReplace.php?orderid=' . $row['idSales_Order'] . '" >
                                     <button type="button" class="btn btn-primary">Replace</button></a><br> </th> ';
                                 // } else {
                                 //     $isrep = 1;

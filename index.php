@@ -147,31 +147,105 @@ $result = mysqli_query($conn, $sql);
     <!--Collection Tab slider-->
 
 
+<br><br>
 
-
-
-
-    <!--Store Feature-->
-    <div class="store-feature section">
+    <!-- Store Feature -->
+    <div class="tab-slider-product section">
         <div class="container">
             <div class="row">
                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                    <ul class="display-table store-info">
+
+                    <div class="section-header text-center">
+                        <h2 class="h2" id="main"><b>Featured Products</b></h2>
+                        <p><b>Browse the huge variety of our products</b></p>
+                    </div>
+
+                    <div class="tabs-listing">
+
+
+                        <div class="tab_container">
+                            <!-- <div id="tab1" class="tab_content grid-products"> -->
+
+                            <div class="productSlider">
+
+                                <!-- start product image -->
+                                <?php
+
+                                $sql21 = "SELECT * FROM `product_master`";
+                                $result21 = mysqli_query($conn, $sql21);
+
+                                while ($row21 = mysqli_fetch_assoc($result21)) {
+                                    $sql0 = "SELECT * FROM product_master NATURAL JOIN product_category WHERE product_master.Product_Category_idProduct_Category=product_category.idProduct_Category AND product_master.idProduct_Master='" . $row21['idProduct_Master'] . "'";
+                                    $res0 = mysqli_query($conn, $sql0);
+                                    $productRow21 = mysqli_fetch_assoc($res0);
+                                    echo '
+                           
+							<div class="col-12 item">
+								<div class="product-image">
+                              
+                                          <center>
+                                               <form method ="post">
+                                         
+									<div class="product-image" >
+                                 
+										<a href="productlayout.php?idRetailer=' . $rows["idRetailer"] . '' . '&idProduct=' . $row21["idProduct_Master"] . '" name="idProduct">
+                                        <img src="admin/' . $row21['image_url'] . '" alt="image not found" width="300px" height="400px">
+								
+                                      </a> </div>
+                                      <div class="product-form__item--submit">
+                                           <a  href="index.php?idRetailers=' . $rows["idRetailer"] . '' . '&idProducts=' . $row21["idProduct_Master"] . '">
+                                             <button  type="button" name="idRetailer"> Add To Wishlist</button>
+                                             </a>
+                                            </div> 
+                                      <div class="product-body"  >
+										 
+										<h2 class="product-name"><b> ' . $row21['Product_Name'] . '</b></a></h2>
+										<h3 class="price">Color :- ' . $row21['Product_colors'] . '</h3>
+                                        <h3 class="price">Category :- ' . $productRow21['Category_Name'] . '</h3>
+										<h3 class="product-size"> Size :- ' . $row21['Product_Size'] . '</h3>
+                                        <h3 class="price"><b>Price :- ₹ ' . $row21['Product_Price'] . '<small>.00</small></b></h3>
+										
+									</div>
+                                   
+                                          </form>  </center>         
+								</div>
+							</div>
+							 ';
+                                }
 
 
 
-                    </ul>
+                                ?>
+
+
+
+
+
+
+
+                                <!-- end product image -->
+
+
+                            </div>
+                            <!-- end product image -->
+
+
+                            <!-- </div> -->
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <!--End Store Feature-->
 </div>
+</body>
 <!--End Body Content-->
 <?php
 include "backend/footer.php";
 ?>
-</body>
+
 
 
 </html>

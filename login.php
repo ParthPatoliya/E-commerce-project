@@ -183,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                                         <p class="mb-4">
 
-                                            <a href="forgotPass.php" id="RecoverPassword">Forgot your password?</a> &nbsp; | &nbsp;
+                                            <!-- <a href="forgotpassword-master/requestRest.php" id="RecoverPassword">Forgot your password?</a> &nbsp; | &nbsp; -->
                                             <a href="register.php" id="customer_register_link">Create account</a>
 
                                         </p>

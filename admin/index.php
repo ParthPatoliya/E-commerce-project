@@ -26,7 +26,7 @@
         <?php include "backend/header.php"; ?>
 
         <!-- Sale & Revenue Start -->
-        <div class="row g-4  me-lg-3" >
+        <div class="row g-4  me-lg-3">
             <div class="col-sm-6 col-xl-3"><a href="retailer.php">
                     <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                         <i class="fa fa-chart-pie fa-3x text-primary"></i>
@@ -77,18 +77,19 @@
 
             </div>
             <div class="col-sm-6 col-xl-3"><a href="purchaseOrder.php">
-                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 ">
-                    <i class="fa fa-chart-bar fa-3x text-primary"></i>
-                    <div class="ms-3">
-                        <p class="mb-2"><b>Category :</b></p>
-                        <h6 class="mb-0"><?php
-                                            $sql = "SELECT * FROM `product_category`";
-                                            $result = mysqli_query($conn, $sql);
-                                            $num = mysqli_num_rows($result);
-                                            echo $num;
-                                            ?> </h6>
+                    <div class="bg-light rounded d-flex align-items-center justify-content-between p-4 ">
+                        <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2"><b>Category :</b></p>
+                            <h6 class="mb-0"><?php
+                                                $sql = "SELECT * FROM `product_category`";
+                                                $result = mysqli_query($conn, $sql);
+                                                $num = mysqli_num_rows($result);
+                                                echo $num;
+                                                ?> </h6>
+                        </div>
                     </div>
-                </div> </a>
+                </a>
             </div>
 
         </div>

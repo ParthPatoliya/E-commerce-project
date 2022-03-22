@@ -71,17 +71,17 @@
     // }
     ?>
 
-  <!-- <script type='text/javascript'>
-    (function() {
-        if (window.localStorage) {
-            if (!localStorage.getItem('firstLoad')) {
-                localStorage['firstLoad'] = true;
-                window.location.reload();
-            } else
-                localStorage.removeItem('firstLoad');
-        }
-    })();
-</script> -->
+  <script type='text/javascript'>
+      (function() {
+          if (window.localStorage) {
+              if (!localStorage.getItem('firstLoad')) {
+                  localStorage['firstLoad'] = true;
+                  window.location.reload();
+              } else
+                  localStorage.removeItem('firstLoad');
+          }
+      })();
+  </script>
 
 
   <head>
@@ -100,6 +100,10 @@
       <link rel="stylesheet" href="assets/css/style.css">
 
       <link rel="stylesheet" href="assets/css/responsive.css">
+      <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+      <!-- <link rel="stylesheet" href="assets/css/search.css"> -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
   </head>
 
   <header>
@@ -112,12 +116,12 @@
               <!--Search Form Drawer-->
               <div class="search">
                   <div class="search__form">
-                      <form class="search-bar__form" method="POST">
-                          <button class="go-btn search__button" type="submit"><i class="icon anm anm-search-l"></i></button>
-                          <input class="search__input" type="search" name="search" value="" placeholder="Search entire store..." aria-label="Search" autocomplete="off">
-                      </form>
-                      <button type="button" class="search-trigger close-btn"><i class="anm anm-times-l"></i></button>
 
+
+                      <input type="text" class="form-control" name="live_search" id="live_search" autocomplete="off" placeholder="Search ...">
+
+                      <button type="button" class="search-trigger close-btn"><i class="anm anm-times-l"></i></button>
+                      <div id="search_result"></div>
                   </div>
               </div>
               <!--End Search Form Drawer-->
@@ -128,6 +132,7 @@
                           <div class="col-10 col-sm-8 col-md-5 col-lg-4">
                               <p class="phone-no"><i class="anm anm-phone-s"></i>+91 9016485585</p>
                           </div>
+
                           <div class="col-sm-4 col-md-4 col-lg-4 d-none d-lg-none d-md-block d-lg-block">
                           </div>
                           <div class="col-2 col-sm-4 col-md-3 col-lg-4 text-right">
@@ -319,13 +324,49 @@
 
 
                               <div class="site-header__search">
-                                  <button type="button" class="search-trigger" name="enter"><i class="icon anm anm-search-l"></i></button>
+
+                                  <button type="button" class="search-trigger"><i class="icon anm anm-search-l"></i></button>
+                                  <!-- <input type="text" class="form-control" name="live_search" id="live_search" autocomplete="off" placeholder="Search ..."> -->
+
                               </div>
 
+                              <script type="text/javascript">
+                                  $(document).ready(function() {
+                                      $("#live_search").keyup(function() {
+                                          var query = $(this).val();
+                                          if (query != "") {
+                                              $.ajax({
+                                                  url: 'ajax-live-search.php',
+                                                  method: 'POST',
+                                                  data: {
+                                                      query: query
+                                                  },
+                                                  success: function(data) {
+                                                      $('#search_result').html(data);
+                                                      $('#search_result').css('display', 'block');
+                                                      $("#live_search").focusout(function() {
+                                                          $('#search_result').css('display', 'none');
+                                                      });
+                                                      $("#live_search").focusin(function() {
+                                                          $('#search_result').css('display', 'block');
+                                                      });
+                                                  }
+                                              });
+                                          } else {
+                                              $('#search_result').css('display', 'none');
+                                          }
+                                      });
+                                  });
+                              </script>
+
                           </div>
+
                       </div>
+
+
                   </div>
               </div>
-              <!--End Header-->
+          </div>
+          <!--End Header-->
 
   </header>

@@ -87,6 +87,8 @@
                     <label for="inputName" class="col-sm-2 control-label">Image :</label>
                     <div class="col-sm-10">
                       <input type="file" class="form-control" id="img" name="image" value="<?php echo '' . $productSelectRow['image_url'] . ''; ?>" required>
+                      <br>
+                      <img src="<?php echo '' . $productSelectRow['image_url'] . ''; ?>" alt="image" width="100px" height="100px">
                     </div>
 
                   </div>

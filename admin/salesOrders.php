@@ -68,8 +68,8 @@
            <th scope="row"> ' . date_format($date, "Y-m-d") . '</th>
                   <th scope="row"><a href="showOrderDetail.php?orderid=' . $saleOrderRow['idSales_Order'] . '">See More</th>';
               if ($saleOrderRow['is_cancel'] == null) {
-                echo '<th scope="row"><a href="AcceptCancel.php?salesOrderId=' . $saleOrderRow['idSales_Order'] . '&isCanceled=0" class="btn btn-success" ><b>Accept</b></a></th>
-        <th scope="row"><a href="AcceptCancel.php?salesOrderId=' . $saleOrderRow['idSales_Order'] . '&isCanceled=1" class="btn btn-danger" >Cancel Order</a></th>';
+                echo '<th scope="row"><a onClick=\'javascript: return confirm("Are you sure you want to accept this order?");\' href="AcceptCancel.php?salesOrderId=' . $saleOrderRow['idSales_Order'] . '&isCanceled=0" class="btn btn-success" ><b>Accept</b></a></th>
+        <th scope="row"><a onClick=\'javascript: return confirm("Are you sure you want to accept this order?");\' href="AcceptCancel.php?salesOrderId=' . $saleOrderRow['idSales_Order'] . '&isCanceled=1" class="btn btn-danger" >Cancel Order</a></th>';
               } elseif ($saleOrderRow['is_cancel'] == 1) {
                 echo '
          <th scope="row"></th>

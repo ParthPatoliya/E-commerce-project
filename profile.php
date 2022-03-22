@@ -88,7 +88,7 @@ if ($num > 0) {
                                         <input type="email" name="email" placeholder="" id="inpt" class="" autocorrect="off" autocapitalize="off" autofocus="" value="<?php echo $ra['E-mail'];  ?> " required>
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <!-- <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                                     <div class="form-group">
                                         <label for="CustomerPassword">Password</label>
                                         <input type="password" value="" placeholder="" id="CustomerPassword" value="<?php echo $ra['Password'];  ?>" name="password" required>
@@ -109,7 +109,7 @@ if ($num > 0) {
                                             }
                                         </script>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                                     <div class="form-group">
@@ -189,7 +189,7 @@ if ($num > 0) {
 
         $sql = "UPDATE `retailer` SET `first_name`='$first_name',`last_name`='$last_name',
     `Company_Name`='$company_name',`Bank_Name`='$bank_name',`Address`='$address',
-    `E-mail`='$email',`Password`='$password',`GST`='$gst_no',`Phone`='$phone_no',
+    `E-mail`='$email',`GST`='$gst_no',`Phone`='$phone_no',
     `Bank_IFSC`='$bank_ifsc',`Bank_acc`='$bank_acc' 
     WHERE idRetailer='$id'";
 

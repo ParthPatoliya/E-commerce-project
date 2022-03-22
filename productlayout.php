@@ -225,82 +225,84 @@ include "backend/header.php";
                         </div>
                         <!-- review code start -->
                         <?php
-                        $find = "SELECT * FROM `retailer` NATURAL JOIN sales_order WHERE retailer.idRetailer=sales_order.Retailer_idRetailer AND sales_order.is_cancel=0 AND idRetailer=" . $_COOKIE['idRetailer'] . "";
-                        //   $find="SELECT * FROM retailer WHERE idRetailer='".$_COOKIE['idRetailer']."'";
-                        $resultfind = mysqli_query($conn, $find);
-                        if (isset($_POST['addtoreview'])) {
+                        // $find = "SELECT * FROM `retailer` NATURAL JOIN sales_order WHERE retailer.idRetailer=sales_order.Retailer_idRetailer AND sales_order.is_cancel=0 AND idRetailer=" . $_COOKIE['idRetailer'] . "";
+                        $find1 = "SELECT * FROM product_master JOIN sales_order_detail on product_master.idProduct_Master=sales_order_detail.Product_Master_idProduct_Master JOIN sales_order ON sales_order.idSales_Order=sales_order_detail.Sales_Order_idSales_Order WHERE idProduct_Master=" . $_GET['idProduct'] . " and Retailer_idRetailer= " . $_COOKIE['idRetailer'] . "";
+                        $resultfind1 = mysqli_query($conn, $find1);
+                        $row2 = mysqli_num_rows($resultfind1);
+                        if ($row2 > 0) {
+                            if (isset($_POST['addtoreview'])) {
 
+                                $add = "SELECT * FROM sales_order";
+                                $result = mysqli_query($conn, $add);
+                                $row = mysqli_fetch_assoc($result);
+                                $id = $row['idSales_Order'];
 
+                                $name = $_POST['Name'];
+                                $email = $_POST['email'];
+                                $title = $_POST['Title'];
+                                $desc = $_POST['Desc'];
 
-                            $add = "SELECT * FROM sales_order";
-                            $result = mysqli_query($conn, $add);
-                            $row = mysqli_fetch_assoc($result);
-                            $id = $row['idSales_Order'];
-
-                            $name = $_POST['Name'];
-                            $email = $_POST['email'];
-                            $title = $_POST['Title'];
-                            $desc = $_POST['Desc'];
-
-                            //  echo $id;
-                            // echo $pid;
-                            // echo $name;
-                            // echo $email;
-                            // echo $title;
-                            // echo $desc;
-                            //   $sql="INSERT INTO feedback (`Name`,`email`,`Title`,`Desc`,`Product_Master_idProduct_Master `,`Sales_Order_idSales_Order `) VALUES ('$name','$email','$title','$desc','$pid','$id')";
-                            $sql = "INSERT INTO `feedback` (`Name`, `email`, `Title`, `Desc`, `Feedback_Date`, `Product_Master_idProduct_Master`, `Sales_Order_idSales_Order`,`Retailer_idRetailer`)
+                                //  echo $id;
+                                // echo $pid;
+                                // echo $name;
+                                // echo $email;
+                                // echo $title;
+                                // echo $desc;
+                                //   $sql="INSERT INTO feedback (`Name`,`email`,`Title`,`Desc`,`Product_Master_idProduct_Master `,`Sales_Order_idSales_Order `) VALUES ('$name','$email','$title','$desc','$pid','$id')";
+                                $sql = "INSERT INTO `feedback` (`Name`, `email`, `Title`, `Desc`, `Feedback_Date`, `Product_Master_idProduct_Master`, `Sales_Order_idSales_Order`,`Retailer_idRetailer`)
                             VALUES ('$name', '$email', '$title', '$desc', current_timestamp(), '$pid', '$id','$_COOKIE[idRetailer]')";
 
-                            $result = mysqli_query($conn, $sql);
-                            if ($result) {
-                                echo '<div class="alert alert-warning">
+                                $result = mysqli_query($conn, $sql);
+                                if ($result) {
+                                    echo '<div class="alert alert-warning">
 					<b>Thanks for your feedback ..!!</b>
 					 </div>';
-                            } else {
-                                echo 'fail';
+                                } else {
+                                    echo 'fail';
+                                }
                             }
-                        }
+
 
 
                         ?>
-                        <!-- review code end -->
+                            <!-- review code end -->
 
 
-                        <!--Product Tabs-->
-                        <div class="tabs-listing">
-                            <div class="tab-container">
-                                <!-- <h3 class="acor-ttl active" rel="tab1">Product Details</h3> -->
-                                <!-- <div id="tab1" class="tab-content">
+                            <!--Product Tabs-->
+                            <div class="tabs-listing">
+                                <div class="tab-container">
+                                    <!-- <h3 class="acor-ttl active" rel="tab1">Product Details</h3> -->
+                                    <!-- <div id="tab1" class="tab-content">
                                             <div class="product-description rte">
                                                 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industr.</p>
                                              
                                            
                                             </div>
                                         </div> -->
-                                <h3 class="acor-ttl" rel="tab2">Product Reviews</h3>
-                                <div id="tab2" class="tab-content">
-                                    <div id="shopify-product-reviews">
-                                        <div class="spr-container">
-                                            <div class="spr-header clearfix">
-                                                <div class="spr-summary">
-                                                    <span class="product-review"><a class="reviewLink"><i class="font-13 fa fa-star"></i>
-                                                            <i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i>
-                                                            <i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i>
-                                                        </a><span class="spr-summary-actions-togglereviews">Based on <?php echo $count ?> reviews</span></span>
+                                    <h3 class="acor-ttl" rel="tab2">Product Reviews</h3>
+                                    <div id="tab2" class="tab-content">
+                                        <div id="shopify-product-reviews">
+                                            <div class="spr-container">
+                                                <div class="spr-header clearfix">
+                                                    <div class="spr-summary">
+                                                        <span class="product-review"><a class="reviewLink"><i class="font-13 fa fa-star"></i>
+                                                                <i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i>
+                                                                <i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i>
+                                                            </a><span class="spr-summary-actions-togglereviews">Based on <?php echo $count ?> reviews</span></span>
 
-                                                    <span class="spr-summary-actions">
-                                                        <a href="#new-review-form" class="spr-summary-actions-newreview btn">Write a review</a>
-                                                    </span>
+                                                        <span class="spr-summary-actions">
+                                                            <a href="#new-review-form" class="spr-summary-actions-newreview btn">Write a review</a>
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="spr-content">
-                                                <div class="spr-form clearfix">
-                                                    <form method="post" id="new-review-form" class="new-review-form">
-                                                        <h3 class="spr-form-title">Write a review</h3>
-                                                        <?php
-
-                                                        while ($rowww = mysqli_fetch_assoc($resultfind)) {
+                                                <div class="spr-content">
+                                                    <div class="spr-form clearfix">
+                                                        <form method="post" id="new-review-form" class="new-review-form">
+                                                            <h3 class="spr-form-title">Write a review</h3>
+                                                            <?php
+                                                            $abc = "SELECT * FROM retailer WHERE retailer.idRetailer=" . $_COOKIE['idRetailer'] . "";
+                                                            $resultabc = mysqli_query($conn, $abc);
+                                                            $rowww = mysqli_fetch_assoc($resultabc);
                                                             echo '
                                                                 <fieldset class="spr-form-contact">
                                                                     <div class="spr-form-contact-name">
@@ -312,39 +314,39 @@ include "backend/header.php";
                                                                         <input class="spr-form-input spr-form-input-email " name="email" id="review_email_10508262282" type="email"  value="' . $rowww['E-mail'] . '">
                                                                     </div>
                                                                 </fieldset>';
-                                                        }
-                                                        ?>
-                                                        <fieldset class="spr-form-review">
-                                                            <div class="spr-form-review-rating">
-                                                                <label class="spr-form-label">Rating</label>
-                                                                <div class="spr-form-input spr-starrating">
-                                                                    <div class="product-review"><a class="reviewLink" href="#">
-                                                                            <i class="fa fa-star-o"></i>
-                                                                            <i class="font-13 fa fa-star-o"></i>
-                                                                            <i class="font-13 fa fa-star-o"></i>
-                                                                            <i class="font-13 fa fa-star-o"></i>
-                                                                            <i class="font-13 fa fa-star-o"></i>
-                                                                        </a></div>
+                                                            // }
+                                                            ?>
+                                                            <fieldset class="spr-form-review">
+                                                                <div class="spr-form-review-rating">
+                                                                    <label class="spr-form-label">Rating</label>
+                                                                    <div class="spr-form-input spr-starrating">
+                                                                        <div class="product-review"><a class="reviewLink" href="#">
+                                                                                <i class="fa fa-star-o"></i>
+                                                                                <i class="font-13 fa fa-star-o"></i>
+                                                                                <i class="font-13 fa fa-star-o"></i>
+                                                                                <i class="font-13 fa fa-star-o"></i>
+                                                                                <i class="font-13 fa fa-star-o"></i>
+                                                                            </a></div>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
 
-                                                            <div class="spr-form-review-title">
-                                                                <label class="spr-form-label" for="review_title_10508262282">Review Title</label>
-                                                                <input class="spr-form-input spr-form-input-text " name="Title" id="review_title_10508262282" type="text" name="review[title]" value="" placeholder="Give your review a title">
-                                                            </div>
-
-                                                            <div class="spr-form-review-body">
-                                                                <label class="spr-form-label" for="review_body_10508262282">Body of Review <span class="spr-form-review-body-charactersremaining">(1500)</span></label>
-                                                                <div class="spr-form-input">
-                                                                    <textarea class="spr-form-input spr-form-input-textarea " name="Desc" id="review_body_10508262282" data-product-id="10508262282" name="review[body]" rows="10" placeholder="Write your comments here"></textarea>
+                                                                <div class="spr-form-review-title">
+                                                                    <label class="spr-form-label" for="review_title_10508262282">Review Title</label>
+                                                                    <input class="spr-form-input spr-form-input-text " name="Title" id="review_title_10508262282" type="text" name="review[title]" value="" placeholder="Give your review a title">
                                                                 </div>
-                                                            </div>
-                                                        </fieldset>
-                                                        <fieldset class="spr-form-actions">
-                                                            <input type="submit" name="addtoreview" class="spr-button spr-button-primary button button-primary btn btn-primary" value="Submit Review">
-                                                        </fieldset>
-                                                    </form>
-                                                </div>
+
+                                                                <div class="spr-form-review-body">
+                                                                    <label class="spr-form-label" for="review_body_10508262282">Body of Review <span class="spr-form-review-body-charactersremaining">(1500)</span></label>
+                                                                    <div class="spr-form-input">
+                                                                        <textarea class="spr-form-input spr-form-input-textarea " name="Desc" id="review_body_10508262282" data-product-id="10508262282" name="review[body]" rows="10" placeholder="Write your comments here"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </fieldset>
+                                                            <fieldset class="spr-form-actions">
+                                                                <input type="submit" name="addtoreview" class="spr-button spr-button-primary button button-primary btn btn-primary" value="Submit Review">
+                                                            </fieldset>
+                                                        </form>
+                                                    </div>
                                                 <?php
 
                                                 while ($rowww = mysqli_fetch_assoc($resulttt)) {
@@ -352,7 +354,7 @@ include "backend/header.php";
                                                         <div class="spr-reviews">
                                                             <div class="spr-review">
                                                                 <div class="spr-review-header">
-                                                                <a href="deletefeedback.php?idProduct=' . $_GET['idProduct'] . '&idFeedback='.$rowww['idFeedback'].'" class="remove" ><i class="anm anm-times-l" aria-hidden="true"></i></a>&nbsp &nbsp &nbsp
+                                                                <a href="deletefeedback.php?idProduct=' . $_GET['idProduct'] . '&idFeedback=' . $rowww['idFeedback'] . '" class="remove" ><i class="anm anm-times-l" aria-hidden="true"></i></a>&nbsp &nbsp &nbsp
                                                                 <span class="product-review spr-starratings spr-review-header-starratings"><span class="reviewLink"><i class="fa fa-star"></i>
                                                                 <i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i></span></span>
                                                                     <h3 class="spr-review-header-title">' . $rowww['Title'] . '</h3>
@@ -365,13 +367,14 @@ include "backend/header.php";
                                                             
 
                                                         </div>';
-                                                } ?>
+                                                }
+                                            } ?>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <!-- <h3 class="acor-ttl" rel="tab4">Shipping &amp; Returns</h3>
+                                    <!-- <h3 class="acor-ttl" rel="tab4">Shipping &amp; Returns</h3>
                                         <div id="tab4" class="tab-content">
                                             <h4>Returns Policy</h4>
                                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eros justo, accumsan non dui sit amet. Phasellus semper volutpat mi sed imperdiet. Ut odio lectus, vulputate non ex non, mattis sollicitudin purus.
@@ -382,9 +385,9 @@ include "backend/header.php";
                                                 Integer sit amet tincidunt tortor. Ut lacinia ullamcorper massa, a fermentum arcu vehicula ut. Ut efficitur faucibus dui Nullam tristique dolor eget turpis consequat varius. Quisque a interdum augue. Nam
                                                 ut nibh mauris.</p>
                                         </div> -->
+                                </div>
                             </div>
-                        </div>
-                        <!--End Product Tabs-->
+                            <!--End Product Tabs-->
                     </div>
                 </div>
                 <!--End-product-single-->
@@ -511,7 +514,7 @@ include "backend/footer.php";
 </div>
 
 </body>
-  <!-- <script type='text/javascript'>
+<!-- <script type='text/javascript'>
     (function() {
         if (window.localStorage) {
             if (!localStorage.getItem('firstLoad')) {
@@ -522,4 +525,5 @@ include "backend/footer.php";
         }
     })();
 </script> -->
+
 </html>
