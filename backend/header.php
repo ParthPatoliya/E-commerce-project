@@ -71,7 +71,7 @@
     // }
     ?>
 
-  <script type='text/javascript'>
+  <!-- <script type='text/javascript'>
       (function() {
           if (window.localStorage) {
               if (!localStorage.getItem('firstLoad')) {
@@ -81,7 +81,7 @@
                   localStorage.removeItem('firstLoad');
           }
       })();
-  </script>
+  </script> -->
 
 
   <head>
@@ -194,39 +194,43 @@
                                           </ul>
                                           <!-- </div> -->
                                       </li>
+                                      <li class="lvl1 parent megamenu"><a href="#">Category <i class="anm anm-angle-down-l"></i></a>
+                                          <div class="megamenu style2">
+                                              <ul class="grid mmWrapper">
+                                                  <li class="grid__item one-whole">
+                                                      <ul class="grid">
+                                                          <?php
+                                                            $cat = "SELECT * FROM product_category";
+                                                            $resultcat = mysqli_query($conn, $cat);
 
-                                      <li class="lvl1 parent megamenu"><a href="#">Product <i class="anm anm-angle-down-l"></i></a>
-                                          <!-- <div class="megamenu style2">
-                                            <ul class="grid mmWrapper">
-                                                <li class="grid__item one-whole">
-                                                    <ul class="grid">
-                                                        <li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Product Page</a>
-                                                            <ul class="subLinks">
-                                                                <li class="lvl-2"><a href="product-layout-1.php" class="site-nav lvl-2">Product Layout 1</a></li>
-                                                            </ul>
-                                                        </li>
-                                                        <li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Product Features</a>
-                                                            <ul class="subLinks">
-                                                                <li class="lvl-2"><a href="product-layout.php" class="site-nav lvl-2">Short Description</a></li>
-                                                            </ul>
-                                                        </li>
-                                                        <li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Product Features</a>
-                                                            <ul class="subLinks">
-                                                                <li class="lvl-2"><a href="product-layout-1.php" class="site-nav lvl-2">Product with Variant Image</a></li>
-                                                            </ul>
-                                                        </li>
-                                                        <li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Product Features</a>
-                                                            <ul class="subLinks">
-                                                                <li class="lvl-2"><a href="product-layout-1.php" class="site-nav lvl-2">Product Accordion</a></li>
-                                                            </ul>
-                                                        </li>
-                                                    </ul>
-                                                </li>
-                                                <li class="grid__item large-up--one-whole imageCol">
-                                                    <a href="#"><img src="assets/images/megamenu-bg2.jpg" alt=""></a>
-                                                </li>
-                                            </ul>
-                                        </div> -->
+                                                            while ($rowcat = mysqli_fetch_assoc($resultcat)) {
+                                                                echo '<form method="post">
+                                                          <li class="grid__item lvl-1 col-md-1 col-lg-3"><a href="productlayout1.php?idCategory=' . $rowcat['idProduct_Category'] . '&catName=' . $rowcat['Category_Name'] . '" class="site-nav lvl-1">' . $rowcat['Category_Name'] . '</a>
+                                                          </li></form>
+                                                           ';
+                                                            } ?>
+                                                          <!-- <li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Product Features</a>
+                                                              <ul class="subLinks">
+                                                                  <li class="lvl-2"><a href="product-layout.php" class="site-nav lvl-2">Short Description</a></li>
+                                                              </ul>
+                                                          </li> -->
+                                                          <!-- <li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Product Features</a>
+                                                              <ul class="subLinks">
+                                                                  <li class="lvl-2"><a href="product-layout-1.php" class="site-nav lvl-2">Product with Variant Image</a></li>
+                                                              </ul>
+                                                          </li> -->
+                                                          <!-- <li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Product Features</a>
+                                                              <ul class="subLinks">
+                                                                  <li class="lvl-2"><a href="product-layout-1.php" class="site-nav lvl-2">Product Accordion</a></li>
+                                                              </ul>
+                                                          </li> -->
+                                                      </ul>
+                                                  </li>
+                                                  <!-- <li class="grid__item large-up--one-whole imageCol">
+                                                      <a href="#"><img src="assets/images/megamenu-bg2.jpg" alt=""></a>
+                                                  </li> -->
+                                              </ul>
+                                          </div>
                                       </li>
                                       <li class="lvl1"><a href="index.php?#main"><b>Buy Now!</b> <i class="anm anm-angle-down-l"></i></a></li>
                                   </ul>

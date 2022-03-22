@@ -26,7 +26,7 @@
     <?php
     include 'backend/db_connect.php';
     // $id=$_GET['idProduct_Master'];
-    $selectSalesOrder = "SELECT * FROM sales_order ";
+    $selectSalesOrder = "SELECT * FROM sales_order ORDER BY idSales_Order DESC";
     $result = mysqli_query($conn, $selectSalesOrder);
 
     ?>

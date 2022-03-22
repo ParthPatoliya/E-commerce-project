@@ -120,7 +120,7 @@
  </div>
  ';
           echo '<script> 
-    window.location.href="purchaseOrder.php"
+    window.location.href="purchaseOrderdetails.php"
  </script>';
 
           // exit();

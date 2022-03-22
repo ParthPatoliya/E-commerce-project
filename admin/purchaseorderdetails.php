@@ -24,12 +24,12 @@
     <div class="content">
         <?php include "backend/header.php"; ?>
         <div class="col-sm-offset-2 col-sm-10">&nbsp;
-            <a href="addproduct.php" class="btn btn-outline-primary w-20 m-2 border-3"><b>+ Add Product</b></a>
+            <a href="purchaseOrder.php" class="btn btn-outline-primary w-20 m-2 border-3"><b>+ Add Purchase</b></a>
         </div>
         <?php
         include 'backend/db_connect.php';
         // $id=$_GET['idProduct_Master'];
-        $sql = "SELECT * FROM product_master ";
+        $sql = "SELECT * FROM product_master JOIN purchase_details on product_master.idProduct_Master=purchase_details.pro_id";
         $result = mysqli_query($conn, $sql);
 
         ?>
@@ -43,6 +43,7 @@
                         <thead>
                             <tr>
                                 <td>ID</td>
+                                <td>Pro ID</td>
                                 <td>Name</td>
                                 <td>Details</td>
                                 <td>Price</td>
@@ -52,7 +53,7 @@
                                 <td>Color</td>
                                 <td>Image</td>
                                 <td>Purchase Date</td>
-                                <td>Update</td>
+
 
                             </tr>
                         </thead>
@@ -64,25 +65,26 @@
                             $productRow0 = mysqli_fetch_assoc($res0);
                             echo '  
                               <tr>
-                               <td>' . $row["idProduct_Master"] . '</td>  
+                               <td>' . $row["id"] . '</td>  
+                                  <td>' . $row["idProduct_Master"] . '</td>  
                                    
                                     <td>' . $row["Product_Name"] . '</td>  
                                     <td>' . $row["Product_Details"] . '</td>  
                                     <td>' . $row["Product_Price"] . '</td> 
                                     <td>' . $productRow0["Category_Name"] . '</td>
                                     <td>' . $row["Product_Size"] . '</td>
-                                    <td>' . $row["Product_Qty"] . '</td>
+                                    <td>' . $row["qty"] . '</td>
                                     <td>' . $row["Product_colors"] . '</td>
                                     <td><img src="' . $row["image_url"] . '" height="100" width="100">' . '</td>
                                     <td>' . $row["date"] . '</td>
-                                        <td><a href="purchaseUpdate.php?idProduct='
-                                . $row["idProduct_Master"] . '"class="btn btn-outline-primary w-10 m-2 border-2"><i class="ace-icon fa fa-edit bigger-120"></i></a></td>
+                                       
                                        
                               </tr>  
                                ';
                             $cnt++;
                         }
                         ?>
+
                     </table>
 
                 </div>
