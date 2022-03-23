@@ -114,11 +114,11 @@ include "backend/header.php";
                                 <div class="product-single__meta">
                                     <div class="product-review">
                                         <a class="reviewLink" href="#tab2">
-                                            <i class="font-13 fa fa-star"></i>
+                                            <!-- <i class="font-13 fa fa-star"></i>
                                             <i class="font-13 fa fa-star"></i>
                                             <i class="font-13 fa fa-star"></i>
                                             <i class="font-13 fa fa-star-o"></i>
-                                            <i class="font-13 fa fa-star-o"></i>
+                                            <i class="font-13 fa fa-star-o"></i> -->
                                             <span class="spr-badge-caption"><b><?php echo $count ?> : Reviews</span>
                                         </a>
                                     </div>
@@ -200,7 +200,6 @@ include "backend/header.php";
                                             </button>
                                                 </a>
                                             </div>
-
                                          
                                                
                                               
@@ -255,8 +254,8 @@ include "backend/header.php";
                                 $result = mysqli_query($conn, $sql);
                                 if ($result) {
                                     echo '<div class="alert alert-warning">
-					<b>Thanks for your feedback ..!!</b>
-					 </div>';
+					                <b>Thanks for your feedback ..!!</b>
+					                </div>';
                                 } else {
                                     echo 'fail';
                                 }
@@ -285,9 +284,12 @@ include "backend/header.php";
                                             <div class="spr-container">
                                                 <div class="spr-header clearfix">
                                                     <div class="spr-summary">
-                                                        <span class="product-review"><a class="reviewLink"><i class="font-13 fa fa-star"></i>
-                                                                <i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i>
-                                                                <i class="font-13 fa fa-star-o"></i><i class="font-13 fa fa-star-o"></i>
+                                                        <span class="product-review"><a class="reviewLink">
+                                                                <!-- <i class="font-13 fa fa-star"></i>
+                                                                <i class="font-13 fa fa-star"></i>
+                                                                <i class="font-13 fa fa-star"></i>
+                                                                <i class="font-13 fa fa-star-o"></i>
+                                                                <i class="font-13 fa fa-star-o"></i> -->
                                                             </a><span class="spr-summary-actions-togglereviews">Based on <?php echo $count ?> reviews</span></span>
 
                                                         <span class="spr-summary-actions">
@@ -311,7 +313,7 @@ include "backend/header.php";
                                                                     </div>
                                                                     <div class="spr-form-contact-email">
                                                                         <label class="spr-form-label" for="review_email_10508262282">Email</label>
-                                                                        <input class="spr-form-input spr-form-input-email " name="email" id="review_email_10508262282" type="email"  value="' . $rowww['E-mail'] . '">
+                                                                        <input class="spr-form-input spr-form-input-email " name="email" id="review_email_10508262282" type="email"  value="' . $rowww['E-mail'] . '" >
                                                                     </div>
                                                                 </fieldset>';
                                                             // }
@@ -321,11 +323,11 @@ include "backend/header.php";
                                                                     <label class="spr-form-label">Rating</label>
                                                                     <div class="spr-form-input spr-starrating">
                                                                         <div class="product-review"><a class="reviewLink" href="#">
-                                                                                <i class="fa fa-star-o"></i>
-                                                                                <i class="font-13 fa fa-star-o"></i>
-                                                                                <i class="font-13 fa fa-star-o"></i>
-                                                                                <i class="font-13 fa fa-star-o"></i>
-                                                                                <i class="font-13 fa fa-star-o"></i>
+                                                                                <i class="fa fa-star fa-2x" data-index="0"></i>
+                                                                                <i class="fa fa-star fa-2x" data-index="1"></i>
+                                                                                <i class="fa fa-star fa-2x" data-index="2"></i>
+                                                                                <i class="fa fa-star fa-2x" data-index="3"></i>
+                                                                                <i class="fa fa-star fa-2x" data-index="4"></i>
                                                                             </a></div>
                                                                     </div>
                                                                 </div>
@@ -365,7 +367,6 @@ include "backend/header.php";
                                                                 </div>
                                                             </div>
                                                             
-
                                                         </div>';
                                                 }
                                             } ?>
@@ -512,7 +513,64 @@ include "backend/footer.php";
         </div>
     </div>
 </div>
+<script>
+    var ratedIndex = -1,
+        uID = 0;
 
+    $(document).ready(function() {
+        resetStarColors();
+
+        if (localStorage.getItem('ratedIndex') != null) {
+            setStars(parseInt(localStorage.getItem('ratedIndex')));
+            uID = localStorage.getItem('uID');
+        }
+
+        $('.fa-star').on('click', function() {
+            ratedIndex = parseInt($(this).data('index'));
+            localStorage.setItem('ratedIndex', ratedIndex);
+            saveToTheDB();
+        });
+
+        $('.fa-star').mouseover(function() {
+            resetStarColors();
+            var currentIndex = parseInt($(this).data('index'));
+            setStars(currentIndex);
+        });
+
+        $('.fa-star').mouseleave(function() {
+            resetStarColors();
+
+            if (ratedIndex != -1)
+                setStars(ratedIndex);
+        });
+    });
+
+    function saveToTheDB() {
+        $.ajax({
+            url: "index.php",
+            method: "POST",
+            dataType: 'json',
+            data: {
+                save: 1,
+                uID: uID,
+                ratedIndex: ratedIndex
+            },
+            success: function(r) {
+                uID = r.id;
+                localStorage.setItem('uID', uID);
+            }
+        });
+    }
+
+    function setStars(max) {
+        for (var i = 0; i <= max; i++)
+            $('.fa-star:eq(' + i + ')').css('color', 'green');
+    }
+
+    function resetStarColors() {
+        $('.fa-star').css('color', 'gray');
+    }
+</script>
 </body>
 <!-- <script type='text/javascript'>
     (function() {

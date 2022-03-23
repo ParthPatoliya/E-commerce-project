@@ -7,7 +7,7 @@
     include "backend/db_connect.php";
     // $id = $_COOKIE["idRetailer"];
     $orderid = $_GET['orderid'];
-    $sql = "SELECT * FROM `sales_order` WHERE Retailer_idRetailer=$orderid ";
+    $sql = "SELECT * FROM `sales_order` NATURAL JOIN retailer WHERE sales_order.Retailer_idRetailer=retailer.idRetailer";
     $ress = mysqli_query($conn, $sql);
     $num4 = mysqli_num_rows($ress);
 
