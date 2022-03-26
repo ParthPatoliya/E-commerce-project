@@ -11,8 +11,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $bank_name = $_POST['bank_name'];
     $address = $_POST['address'];
     $email = $_POST['email'];
-    $password = $_POST['password1'];
-    $password2 = $_POST['password2'];
+    $password = $_POST['password'];
+    $password2 = $_POST['confirm_password'];
     $gst_no = $_POST['gst_no'];
     $phone_no = $_POST['phone_no'];
     $bank_ifsc = $_POST['bank_ifsc'];
@@ -58,6 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Main Style CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 </head>
 
@@ -187,22 +188,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <input type="email" name="email" placeholder="" id="CustomerEmail" class="" autocorrect="off" autocapitalize="off" autofocus="" required>
                                         </div>
                                     </div>
-
                                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="form-group">
-                                            <label for="Password">Password</label>
-                                            <input type="password" value="" name="password1" placeholder="" id="Password" class="" required>
-                                            <label for="CustomerPassword">Confirm Password</label>
-                                            <input type="password" value="" name="password2" placeholder="" id="CustomerPassword" class="" required>
+                                            <label for="CustomerPassword">Password</label>
+                                            <input type="password" value="" name="password" placeholder="" id="password" class="" required>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="form-group">
+                                            <label for="CustomerPassword1">Confirm Password</label>
+                                            <input type="password" value="" name="confirm_password" placeholder="" id="confirm_password" class="" required>
 
                                             <input type="checkbox" onclick="myFunction()">
-                                            <label for="CustomerPassword">Show Password</label>
-
-
-
+                                            <label for="CustomerPassword1">Show Password</label>
                                             <script>
                                                 function myFunction() {
-                                                    var x = document.getElementById("CustomerPassword");
+                                                    var x = document.getElementById("confirm_password");
                                                     if (x.type === "password") {
                                                         x.type = "text";
                                                     } else {
@@ -210,6 +212,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                     }
                                                 }
                                             </script>
+                                            <span id='message'></span>
+                                            <script>
+                                                $('#password, #confirm_password').on('keyup', function() {
+                                                    if ($('#password').val() == $('#confirm_password').val()) {
+                                                        $('#message').html('Password is Match').css('color', 'green');
+                                                    } else
+                                                        $('#message').html('Password is Not Matching').css('color', 'red');
+                                                });
+                                            </script>
+
                                         </div>
                                     </div>
 
@@ -223,13 +235,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <div class="form-group">
                                             <label for="LastName">Phone No.</label>
 
-                                            <input type="tel" name="phone_no" pattern="[0-9]{10}" placeholder="" id="LastName" required>
+                                            <input type="number" name="phone_no" pattern="[0-9]{10}" placeholder="" id="LastName" required>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="form-group">
+                                            <label for="LastName">Bank Account Number</label>
+                                            <input type="text" name="bank_acc" pattern="^[0-9]{8}[0-9]{4}$" placeholder="" id="LastName" required>
+                                        </div>
+                                    </div> -->
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="form-group">
+                                            <label for="CustomerPassword">Bank Account Number</label>
+                                            <input type="number" value="" name="bank_acc" placeholder="" pattern="^[0-9]{8}[0-9]{4}$" id="bankacc" class="" required>
+
                                         </div>
                                     </div>
                                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="form-group">
-                                            <label for="LastName">Bank Account Number</label>
-                                            <input type="text" name="bank_acc" pattern="^[0-9]{8}[0-9]{4}$" placeholder="" id="LastName" required>
+                                            <label for="CustomerPassword1">Confirm Bank Account Number</label>
+                                            <input type="number" value="" name="confirm_bank" placeholder="" pattern="^[0-9]{8}[0-9]{4}$" id="confirm_bank" class="" required>
+
+                                            <span id='message1'></span>
+                                            <script>
+                                                $('#bankacc, #confirm_bank').on('keyup', function() {
+                                                    if ($('#bankacc').val() == $('#confirm_bank').val()) {
+                                                        $('#message1').html('Bank account number is Match').css('color', 'green');
+                                                    } else
+                                                        $('#message1').html('Bank account number is Not Matching').css('color', 'red');
+                                                });
+                                            </script>
+
                                         </div>
                                     </div>
                                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
@@ -260,7 +296,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         include "backend/footer.php";
         ?>
 </body>
-
-
 
 </html>
