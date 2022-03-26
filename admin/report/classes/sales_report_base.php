@@ -8,17 +8,17 @@ class sales_report_base extends ReportTable
 {
 	public $ShowGroupHeaderAsRow = FALSE;
 	public $ShowCompactSummaryFooter = TRUE;
-	public $idSales_Order;
 	public $Sales_Order_Date;
 	public $taxable_amount;
 	public $tax_amount;
 	public $Total_Amount;
 	public $Credit_Due_date;
-	public $Net_Qty;
-	public $is_cancel;
-	public $cancel_date;
-	public $cancel_reason;
-	public $Retailer_idRetailer;
+	public $Product_qty;
+	public $Product_Name;
+	public $Product_Details;
+	public $Company_Name;
+	public $GST;
+	public $Address;
 
 	// Constructor
 	public function __construct()
@@ -37,18 +37,13 @@ class sales_report_base extends ReportTable
 		$this->ExportAll = TRUE;
 		$this->ExportPageBreakCount = 0;
 
-		// idSales_Order
-		$this->idSales_Order = new ReportField('sales_report_base', 'sales report', 'x_idSales_Order', 'idSales_Order', '`idSales_Order`', 3, -1, FALSE, 'FORMATTED TEXT', 'NO');
-		$this->idSales_Order->Sortable = TRUE; // Allow sort
-		$this->idSales_Order->DefaultErrorMessage = $ReportLanguage->phrase("IncorrectInteger");
-		$this->idSales_Order->DateFilter = "";
-		$this->fields['idSales_Order'] = &$this->idSales_Order;
-
 		// Sales_Order_Date
 		$this->Sales_Order_Date = new ReportField('sales_report_base', 'sales report', 'x_Sales_Order_Date', 'Sales_Order_Date', '`Sales_Order_Date`', 135, 0, FALSE, 'FORMATTED TEXT', 'TEXT');
 		$this->Sales_Order_Date->Sortable = TRUE; // Allow sort
 		$this->Sales_Order_Date->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $ReportLanguage->phrase("IncorrectDate"));
 		$this->Sales_Order_Date->DateFilter = "";
+		$this->Sales_Order_Date->Lookup = new ReportLookup('Sales_Order_Date', 'sales_report_base', TRUE, 'Sales_Order_Date', ["Sales_Order_Date","","",""], [], [], [], [], [], [], '`Sales_Order_Date` ASC', '');
+		$this->Sales_Order_Date->Lookup->RenderViewFunc = "renderLookup";
 		$this->fields['Sales_Order_Date'] = &$this->Sales_Order_Date;
 
 		// taxable_amount
@@ -77,60 +72,79 @@ class sales_report_base extends ReportTable
 		$this->Credit_Due_date->Sortable = TRUE; // Allow sort
 		$this->Credit_Due_date->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $ReportLanguage->phrase("IncorrectDate"));
 		$this->Credit_Due_date->DateFilter = "";
+		$this->Credit_Due_date->Lookup = new ReportLookup('Credit_Due_date', 'sales_report_base', TRUE, 'Credit_Due_date', ["Credit_Due_date","","",""], [], [], [], [], [], [], '`Credit_Due_date` ASC', '');
+		$this->Credit_Due_date->Lookup->RenderViewFunc = "renderLookup";
 		$this->fields['Credit_Due_date'] = &$this->Credit_Due_date;
 
-		// Net_Qty
-		$this->Net_Qty = new ReportField('sales_report_base', 'sales report', 'x_Net_Qty', 'Net_Qty', '`Net_Qty`', 3, -1, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->Net_Qty->Sortable = TRUE; // Allow sort
-		$this->Net_Qty->DefaultErrorMessage = $ReportLanguage->phrase("IncorrectInteger");
-		$this->Net_Qty->DateFilter = "";
-		$this->fields['Net_Qty'] = &$this->Net_Qty;
+		// Product_qty
+		$this->Product_qty = new ReportField('sales_report_base', 'sales report', 'x_Product_qty', 'Product_qty', '`Product_qty`', 3, -1, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->Product_qty->Sortable = TRUE; // Allow sort
+		$this->Product_qty->DefaultErrorMessage = $ReportLanguage->phrase("IncorrectInteger");
+		$this->Product_qty->DateFilter = "";
+		$this->fields['Product_qty'] = &$this->Product_qty;
 
-		// is_cancel
-		$this->is_cancel = new ReportField('sales_report_base', 'sales report', 'x_is_cancel', 'is_cancel', '`is_cancel`', 16, -1, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->is_cancel->Sortable = TRUE; // Allow sort
-		$this->is_cancel->DefaultErrorMessage = $ReportLanguage->phrase("IncorrectInteger");
-		$this->is_cancel->DateFilter = "";
-		$this->fields['is_cancel'] = &$this->is_cancel;
+		// Product_Name
+		$this->Product_Name = new ReportField('sales_report_base', 'sales report', 'x_Product_Name', 'Product_Name', '`Product_Name`', 200, -1, FALSE, 'FORMATTED TEXT', 'SELECT');
+		$this->Product_Name->Sortable = TRUE; // Allow sort
+		$this->Product_Name->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->Product_Name->PleaseSelectText = $ReportLanguage->phrase("PleaseSelect"); // PleaseSelect text
+		$this->Product_Name->DateFilter = "";
+		$this->Product_Name->Lookup = new ReportLookup('Product_Name', 'sales_report_base', TRUE, 'Product_Name', ["Product_Name","","",""], [], [], [], [], [], [], '`Product_Name` ASC', '');
+		$this->Product_Name->Lookup->RenderViewFunc = "renderLookup";
+		$this->fields['Product_Name'] = &$this->Product_Name;
 
-		// cancel_date
-		$this->cancel_date = new ReportField('sales_report_base', 'sales report', 'x_cancel_date', 'cancel_date', '`cancel_date`', 135, 0, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->cancel_date->Sortable = TRUE; // Allow sort
-		$this->cancel_date->DefaultErrorMessage = str_replace("%s", $GLOBALS["DATE_FORMAT"], $ReportLanguage->phrase("IncorrectDate"));
-		$this->cancel_date->DateFilter = "";
-		$this->cancel_date->Lookup = new ReportLookup('cancel_date', 'sales_report_base', TRUE, 'cancel_date', ["cancel_date","","",""], [], [], [], [], [], [], '`cancel_date` ASC', '');
-		$this->cancel_date->Lookup->RenderViewFunc = "renderLookup";
-		$this->fields['cancel_date'] = &$this->cancel_date;
+		// Product_Details
+		$this->Product_Details = new ReportField('sales_report_base', 'sales report', 'x_Product_Details', 'Product_Details', '`Product_Details`', 200, -1, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->Product_Details->Sortable = TRUE; // Allow sort
+		$this->Product_Details->DateFilter = "";
+		$this->fields['Product_Details'] = &$this->Product_Details;
 
-		// cancel_reason
-		$this->cancel_reason = new ReportField('sales_report_base', 'sales report', 'x_cancel_reason', 'cancel_reason', '`cancel_reason`', 200, -1, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->cancel_reason->Sortable = TRUE; // Allow sort
-		$this->cancel_reason->DateFilter = "";
-		$this->fields['cancel_reason'] = &$this->cancel_reason;
+		// Company_Name
+		$this->Company_Name = new ReportField('sales_report_base', 'sales report', 'x_Company_Name', 'Company_Name', '`Company_Name`', 200, -1, FALSE, 'FORMATTED TEXT', 'SELECT');
+		$this->Company_Name->Sortable = TRUE; // Allow sort
+		$this->Company_Name->UsePleaseSelect = TRUE; // Use PleaseSelect by default
+		$this->Company_Name->PleaseSelectText = $ReportLanguage->phrase("PleaseSelect"); // PleaseSelect text
+		$this->Company_Name->DateFilter = "";
+		$this->Company_Name->Lookup = new ReportLookup('Company_Name', 'sales_report_base', TRUE, 'Company_Name', ["Company_Name","","",""], [], [], [], [], [], [], '`Company_Name` ASC', '');
+		$this->Company_Name->Lookup->RenderViewFunc = "renderLookup";
+		$this->fields['Company_Name'] = &$this->Company_Name;
 
-		// Retailer_idRetailer
-		$this->Retailer_idRetailer = new ReportField('sales_report_base', 'sales report', 'x_Retailer_idRetailer', 'Retailer_idRetailer', '`Retailer_idRetailer`', 3, -1, FALSE, 'FORMATTED TEXT', 'TEXT');
-		$this->Retailer_idRetailer->Sortable = TRUE; // Allow sort
-		$this->Retailer_idRetailer->DefaultErrorMessage = $ReportLanguage->phrase("IncorrectInteger");
-		$this->Retailer_idRetailer->DateFilter = "";
-		$this->fields['Retailer_idRetailer'] = &$this->Retailer_idRetailer;
+		// GST
+		$this->GST = new ReportField('sales_report_base', 'sales report', 'x_GST', 'GST', '`GST`', 200, -1, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->GST->Sortable = TRUE; // Allow sort
+		$this->GST->DateFilter = "";
+		$this->fields['GST'] = &$this->GST;
+
+		// Address
+		$this->Address = new ReportField('sales_report_base', 'sales report', 'x_Address', 'Address', '`Address`', 200, -1, FALSE, 'FORMATTED TEXT', 'TEXT');
+		$this->Address->Sortable = TRUE; // Allow sort
+		$this->Address->DateFilter = "";
+		$this->fields['Address'] = &$this->Address;
 	}
 
 	// Render for popup
 	public function renderPopup()
 	{
 		global $ReportLanguage;
-		if ($this->cancel_date->CurrentValue === NULL) // Handle null value
-			$this->cancel_date->ViewValue = $ReportLanguage->phrase("NullLabel");
-		elseif ($this->cancel_date->CurrentValue == "") // Handle empty value
-			$this->cancel_date->ViewValue = $ReportLanguage->phrase("EmptyLabel");
+		if ($this->Sales_Order_Date->CurrentValue === NULL) // Handle null value
+			$this->Sales_Order_Date->ViewValue = $ReportLanguage->phrase("NullLabel");
+		elseif ($this->Sales_Order_Date->CurrentValue == "") // Handle empty value
+			$this->Sales_Order_Date->ViewValue = $ReportLanguage->phrase("EmptyLabel");
 		else
-			$this->cancel_date->ViewValue = $this->cancel_date->CurrentValue;
+			$this->Sales_Order_Date->ViewValue = $this->Sales_Order_Date->CurrentValue;
+		if ($this->Credit_Due_date->CurrentValue === NULL) // Handle null value
+			$this->Credit_Due_date->ViewValue = $ReportLanguage->phrase("NullLabel");
+		elseif ($this->Credit_Due_date->CurrentValue == "") // Handle empty value
+			$this->Credit_Due_date->ViewValue = $ReportLanguage->phrase("EmptyLabel");
+		else
+			$this->Credit_Due_date->ViewValue = $this->Credit_Due_date->CurrentValue;
 	}
 
 	// Render for lookup
 	public function renderLookup()
 	{
+		$this->Product_Name->ViewValue = GetDropDownDisplayValue($this->Product_Name->CurrentValue, "", 0);
+		$this->Company_Name->ViewValue = GetDropDownDisplayValue($this->Company_Name->CurrentValue, "", 0);
 	}
 
 	// Get Field Visibility

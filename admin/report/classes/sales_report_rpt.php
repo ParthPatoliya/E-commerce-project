@@ -11,7 +11,7 @@ class sales_report_rpt extends sales_report_base
 	public $PageID = 'rpt';
 
 	// Project ID
-	public $ProjectID = "{8E8DDB7A-3730-4802-B86F-ABED82524C31}";
+	public $ProjectID = "{4533CF47-2E40-428D-81EF-FA3CBA4A8B21}";
 
 	// Page object name
 	public $PageObjName = 'sales_report_rpt';
@@ -454,7 +454,7 @@ class sales_report_rpt extends sales_report_base
 		$item = &$this->SearchOptions->add("searchtoggle");
 		$searchToggleClass = $this->FilterApplied ? " active" : " active";
 		$item->Body = "<button type=\"button\" class=\"btn btn-default ew-search-toggle" . $searchToggleClass . "\" title=\"" . $ReportLanguage->phrase("SearchBtn", TRUE) . "\" data-caption=\"" . $ReportLanguage->phrase("SearchBtn", TRUE) . "\" data-toggle=\"button\" data-form=\"fsales_reportrpt\">" . $ReportLanguage->phrase("SearchBtn") . "</button>";
-		$item->Visible = FALSE;
+		$item->Visible = TRUE;
 
 		// Reset filter
 		$item = &$this->SearchOptions->add("resetfilter");
@@ -618,24 +618,27 @@ class sales_report_rpt extends sales_report_base
 		$this->createToken();
 
 		// Set up lookup cache
-		// Set field visibility for detail fields
+		$this->setupLookupOptions($this->Product_Name);
+		$this->setupLookupOptions($this->Company_Name);
 
-		$this->idSales_Order->setVisibility();
+		// Set field visibility for detail fields
 		$this->Sales_Order_Date->setVisibility();
 		$this->taxable_amount->setVisibility();
 		$this->tax_amount->setVisibility();
 		$this->Total_Amount->setVisibility();
 		$this->Credit_Due_date->setVisibility();
-		$this->Net_Qty->setVisibility();
-		$this->cancel_date->setVisibility();
-		$this->cancel_reason->setVisibility();
-		$this->Retailer_idRetailer->setVisibility();
+		$this->Product_qty->setVisibility();
+		$this->Product_Name->setVisibility();
+		$this->Product_Details->setVisibility();
+		$this->Company_Name->setVisibility();
+		$this->GST->setVisibility();
+		$this->Address->setVisibility();
 
 		// Aggregate variables
 		// 1st dimension = no of groups (level 0 used for grand total)
 		// 2nd dimension = no of fields
 
-		$fieldCount = 11;
+		$fieldCount = 12;
 		$groupCount = 1;
 		$this->Values = &InitArray($fieldCount, 0);
 		$this->Counts = &Init2DArray($groupCount, $fieldCount, 0);
@@ -648,7 +651,7 @@ class sales_report_rpt extends sales_report_base
 		$this->GrandMaximums = &InitArray($fieldCount, NULL);
 
 		// Set up array if accumulation required: [Accum, SkipNullOrZero]
-		$this->Columns = [[FALSE, FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE]];
+		$this->Columns = [[FALSE, FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE], [FALSE,FALSE]];
 
 		// Set up groups per page dynamically
 		$this->setupDisplayGroups();
@@ -656,9 +659,12 @@ class sales_report_rpt extends sales_report_base
 		// Set up Breadcrumb
 		if (!$this->isExport())
 			$this->setupBreadcrumb();
-		$this->cancel_date->SelectionList = "";
-		$this->cancel_date->DefaultSelectionList = "";
-		$this->cancel_date->ValueList = "";
+		$this->Sales_Order_Date->SelectionList = "";
+		$this->Sales_Order_Date->DefaultSelectionList = "";
+		$this->Sales_Order_Date->ValueList = "";
+		$this->Credit_Due_date->SelectionList = "";
+		$this->Credit_Due_date->DefaultSelectionList = "";
+		$this->Credit_Due_date->ValueList = "";
 
 		// Check if search command
 		$this->SearchCommand = (Get("cmd", "") == "search");
@@ -680,6 +686,10 @@ class sales_report_rpt extends sales_report_base
 
 		// Restore filter list
 		$this->restoreFilterList();
+
+		// Build extended filter
+		$extendedFilter = $this->getExtendedFilter();
+		AddFilter($this->Filter, $extendedFilter);
 
 		// Build popup filter
 		$popupFilter = $this->getPopupFilter();
@@ -809,54 +819,55 @@ class sales_report_rpt extends sales_report_base
 			return;
 		if ($firstRow) { // Get first row
 				$this->FirstRowData = [];
-				$this->FirstRowData["idSales_Order"] = $this->Recordset->fields('idSales_Order');
 				$this->FirstRowData["Sales_Order_Date"] = $this->Recordset->fields('Sales_Order_Date');
 				$this->FirstRowData["taxable_amount"] = $this->Recordset->fields('taxable_amount');
 				$this->FirstRowData["tax_amount"] = $this->Recordset->fields('tax_amount');
 				$this->FirstRowData["Total_Amount"] = $this->Recordset->fields('Total_Amount');
 				$this->FirstRowData["Credit_Due_date"] = $this->Recordset->fields('Credit_Due_date');
-				$this->FirstRowData["Net_Qty"] = $this->Recordset->fields('Net_Qty');
-				$this->FirstRowData["is_cancel"] = $this->Recordset->fields('is_cancel');
-				$this->FirstRowData["cancel_date"] = $this->Recordset->fields('cancel_date');
-				$this->FirstRowData["cancel_reason"] = $this->Recordset->fields('cancel_reason');
-				$this->FirstRowData["Retailer_idRetailer"] = $this->Recordset->fields('Retailer_idRetailer');
+				$this->FirstRowData["Product_qty"] = $this->Recordset->fields('Product_qty');
+				$this->FirstRowData["Product_Name"] = $this->Recordset->fields('Product_Name');
+				$this->FirstRowData["Product_Details"] = $this->Recordset->fields('Product_Details');
+				$this->FirstRowData["Company_Name"] = $this->Recordset->fields('Company_Name');
+				$this->FirstRowData["GST"] = $this->Recordset->fields('GST');
+				$this->FirstRowData["Address"] = $this->Recordset->fields('Address');
 		} else { // Get next row
 			$this->Recordset->moveNext();
 		}
 		if (!$this->Recordset->EOF) {
-			$this->idSales_Order->setDbValue($this->Recordset->fields('idSales_Order'));
 			$this->Sales_Order_Date->setDbValue($this->Recordset->fields('Sales_Order_Date'));
 			$this->taxable_amount->setDbValue($this->Recordset->fields('taxable_amount'));
 			$this->tax_amount->setDbValue($this->Recordset->fields('tax_amount'));
 			$this->Total_Amount->setDbValue($this->Recordset->fields('Total_Amount'));
 			$this->Credit_Due_date->setDbValue($this->Recordset->fields('Credit_Due_date'));
-			$this->Net_Qty->setDbValue($this->Recordset->fields('Net_Qty'));
-			$this->is_cancel->setDbValue($this->Recordset->fields('is_cancel'));
-			$this->cancel_date->setDbValue($this->Recordset->fields('cancel_date'));
-			$this->cancel_reason->setDbValue($this->Recordset->fields('cancel_reason'));
-			$this->Retailer_idRetailer->setDbValue($this->Recordset->fields('Retailer_idRetailer'));
-			$this->Values[1] = $this->idSales_Order->CurrentValue;
-			$this->Values[2] = $this->Sales_Order_Date->CurrentValue;
-			$this->Values[3] = $this->taxable_amount->CurrentValue;
-			$this->Values[4] = $this->tax_amount->CurrentValue;
-			$this->Values[5] = $this->Total_Amount->CurrentValue;
-			$this->Values[6] = $this->Credit_Due_date->CurrentValue;
-			$this->Values[7] = $this->Net_Qty->CurrentValue;
-			$this->Values[8] = $this->cancel_date->CurrentValue;
-			$this->Values[9] = $this->cancel_reason->CurrentValue;
-			$this->Values[10] = $this->Retailer_idRetailer->CurrentValue;
+			$this->Product_qty->setDbValue($this->Recordset->fields('Product_qty'));
+			$this->Product_Name->setDbValue($this->Recordset->fields('Product_Name'));
+			$this->Product_Details->setDbValue($this->Recordset->fields('Product_Details'));
+			$this->Company_Name->setDbValue($this->Recordset->fields('Company_Name'));
+			$this->GST->setDbValue($this->Recordset->fields('GST'));
+			$this->Address->setDbValue($this->Recordset->fields('Address'));
+			$this->Values[1] = $this->Sales_Order_Date->CurrentValue;
+			$this->Values[2] = $this->taxable_amount->CurrentValue;
+			$this->Values[3] = $this->tax_amount->CurrentValue;
+			$this->Values[4] = $this->Total_Amount->CurrentValue;
+			$this->Values[5] = $this->Credit_Due_date->CurrentValue;
+			$this->Values[6] = $this->Product_qty->CurrentValue;
+			$this->Values[7] = $this->Product_Name->CurrentValue;
+			$this->Values[8] = $this->Product_Details->CurrentValue;
+			$this->Values[9] = $this->Company_Name->CurrentValue;
+			$this->Values[10] = $this->GST->CurrentValue;
+			$this->Values[11] = $this->Address->CurrentValue;
 		} else {
-			$this->idSales_Order->setDbValue("");
 			$this->Sales_Order_Date->setDbValue("");
 			$this->taxable_amount->setDbValue("");
 			$this->tax_amount->setDbValue("");
 			$this->Total_Amount->setDbValue("");
 			$this->Credit_Due_date->setDbValue("");
-			$this->Net_Qty->setDbValue("");
-			$this->is_cancel->setDbValue("");
-			$this->cancel_date->setDbValue("");
-			$this->cancel_reason->setDbValue("");
-			$this->Retailer_idRetailer->setDbValue("");
+			$this->Product_qty->setDbValue("");
+			$this->Product_Name->setDbValue("");
+			$this->Product_Details->setDbValue("");
+			$this->Company_Name->setDbValue("");
+			$this->GST->setDbValue("");
+			$this->Address->setDbValue("");
 		}
 	}
 
@@ -900,11 +911,32 @@ class sales_report_rpt extends sales_report_base
 		// Call Row_Rendering event
 		$this->Row_Rendering();
 		if ($this->RowType == ROWTYPE_SEARCH) { // Search row
+			$ar = [];
+			if (is_array($this->Product_Name->AdvancedFilters)) {
+				foreach ($this->Product_Name->AdvancedFilters as $filter)
+					if ($filter->Enabled)
+						$ar[] = [$filter->ID, $filter->Name];
+			}
+			if (is_array($this->Product_Name->DropDownList)) {
+				foreach ($this->Product_Name->DropDownList as $val)
+					$ar[] = [$val, GetDropDownDisplayValue($val, "", 0)];
+			}
+			$this->Product_Name->EditValue = $ar;
+			$this->Product_Name->AdvancedSearch->SearchValue = is_array($this->Product_Name->DropDownValue) ? implode(",", $this->Product_Name->DropDownValue) : $this->Product_Name->DropDownValue;
+			$ar = [];
+			if (is_array($this->Company_Name->AdvancedFilters)) {
+				foreach ($this->Company_Name->AdvancedFilters as $filter)
+					if ($filter->Enabled)
+						$ar[] = [$filter->ID, $filter->Name];
+			}
+			if (is_array($this->Company_Name->DropDownList)) {
+				foreach ($this->Company_Name->DropDownList as $val)
+					$ar[] = [$val, GetDropDownDisplayValue($val, "", 0)];
+			}
+			$this->Company_Name->EditValue = $ar;
+			$this->Company_Name->AdvancedSearch->SearchValue = is_array($this->Company_Name->DropDownValue) ? implode(",", $this->Company_Name->DropDownValue) : $this->Company_Name->DropDownValue;
 		} elseif ($this->RowType == ROWTYPE_TOTAL && !($this->RowTotalType == ROWTOTAL_GROUP && $this->RowTotalSubType == ROWTOTAL_HEADER)) { // Summary row
 			PrependClass($this->RowAttrs["class"], ($this->RowTotalType == ROWTOTAL_PAGE || $this->RowTotalType == ROWTOTAL_GRAND) ? "ew-rpt-grp-aggregate" : ""); // Set up row class
-
-			// idSales_Order
-			$this->idSales_Order->HrefValue = "";
 
 			// Sales_Order_Date
 			$this->Sales_Order_Date->HrefValue = "";
@@ -921,25 +953,27 @@ class sales_report_rpt extends sales_report_base
 			// Credit_Due_date
 			$this->Credit_Due_date->HrefValue = "";
 
-			// Net_Qty
-			$this->Net_Qty->HrefValue = "";
+			// Product_qty
+			$this->Product_qty->HrefValue = "";
 
-			// cancel_date
-			$this->cancel_date->HrefValue = "";
+			// Product_Name
+			$this->Product_Name->HrefValue = "";
 
-			// cancel_reason
-			$this->cancel_reason->HrefValue = "";
+			// Product_Details
+			$this->Product_Details->HrefValue = "";
 
-			// Retailer_idRetailer
-			$this->Retailer_idRetailer->HrefValue = "";
+			// Company_Name
+			$this->Company_Name->HrefValue = "";
+
+			// GST
+			$this->GST->HrefValue = "";
+
+			// Address
+			$this->Address->HrefValue = "";
 		} else {
 			if ($this->RowTotalType == ROWTOTAL_GROUP && $this->RowTotalSubType == ROWTOTAL_HEADER) {
 			} else {
 			}
-
-			// idSales_Order
-			$this->idSales_Order->ViewValue = $this->idSales_Order->CurrentValue;
-			$this->idSales_Order->CellAttrs["class"] = ($this->RecordCount % 2 <> 1 ? "ew-table-alt-row" : "ew-table-row");
 
 			// Sales_Order_Date
 			$this->Sales_Order_Date->ViewValue = $this->Sales_Order_Date->CurrentValue;
@@ -966,27 +1000,30 @@ class sales_report_rpt extends sales_report_base
 			$this->Credit_Due_date->ViewValue = FormatDateTime($this->Credit_Due_date->ViewValue, 0);
 			$this->Credit_Due_date->CellAttrs["class"] = ($this->RecordCount % 2 <> 1 ? "ew-table-alt-row" : "ew-table-row");
 
-			// Net_Qty
-			$this->Net_Qty->ViewValue = $this->Net_Qty->CurrentValue;
-			$this->Net_Qty->ViewValue = FormatNumber($this->Net_Qty->ViewValue, 0, -2, -2, -2);
-			$this->Net_Qty->CellAttrs["class"] = ($this->RecordCount % 2 <> 1 ? "ew-table-alt-row" : "ew-table-row");
+			// Product_qty
+			$this->Product_qty->ViewValue = $this->Product_qty->CurrentValue;
+			$this->Product_qty->ViewValue = FormatNumber($this->Product_qty->ViewValue, 0, -2, -2, -2);
+			$this->Product_qty->CellAttrs["class"] = ($this->RecordCount % 2 <> 1 ? "ew-table-alt-row" : "ew-table-row");
 
-			// cancel_date
-			$this->cancel_date->ViewValue = $this->cancel_date->CurrentValue;
-			$this->cancel_date->ViewValue = FormatDateTime($this->cancel_date->ViewValue, 0);
-			$this->cancel_date->CellAttrs["class"] = ($this->RecordCount % 2 <> 1 ? "ew-table-alt-row" : "ew-table-row");
+			// Product_Name
+			$this->Product_Name->ViewValue = $this->Product_Name->CurrentValue;
+			$this->Product_Name->CellAttrs["class"] = ($this->RecordCount % 2 <> 1 ? "ew-table-alt-row" : "ew-table-row");
 
-			// cancel_reason
-			$this->cancel_reason->ViewValue = $this->cancel_reason->CurrentValue;
-			$this->cancel_reason->CellAttrs["class"] = ($this->RecordCount % 2 <> 1 ? "ew-table-alt-row" : "ew-table-row");
+			// Product_Details
+			$this->Product_Details->ViewValue = $this->Product_Details->CurrentValue;
+			$this->Product_Details->CellAttrs["class"] = ($this->RecordCount % 2 <> 1 ? "ew-table-alt-row" : "ew-table-row");
 
-			// Retailer_idRetailer
-			$this->Retailer_idRetailer->ViewValue = $this->Retailer_idRetailer->CurrentValue;
-			$this->Retailer_idRetailer->ViewValue = FormatNumber($this->Retailer_idRetailer->ViewValue, 0, -2, -2, -2);
-			$this->Retailer_idRetailer->CellAttrs["class"] = ($this->RecordCount % 2 <> 1 ? "ew-table-alt-row" : "ew-table-row");
+			// Company_Name
+			$this->Company_Name->ViewValue = $this->Company_Name->CurrentValue;
+			$this->Company_Name->CellAttrs["class"] = ($this->RecordCount % 2 <> 1 ? "ew-table-alt-row" : "ew-table-row");
 
-			// idSales_Order
-			$this->idSales_Order->HrefValue = "";
+			// GST
+			$this->GST->ViewValue = $this->GST->CurrentValue;
+			$this->GST->CellAttrs["class"] = ($this->RecordCount % 2 <> 1 ? "ew-table-alt-row" : "ew-table-row");
+
+			// Address
+			$this->Address->ViewValue = $this->Address->CurrentValue;
+			$this->Address->CellAttrs["class"] = ($this->RecordCount % 2 <> 1 ? "ew-table-alt-row" : "ew-table-row");
 
 			// Sales_Order_Date
 			$this->Sales_Order_Date->HrefValue = "";
@@ -1003,31 +1040,28 @@ class sales_report_rpt extends sales_report_base
 			// Credit_Due_date
 			$this->Credit_Due_date->HrefValue = "";
 
-			// Net_Qty
-			$this->Net_Qty->HrefValue = "";
+			// Product_qty
+			$this->Product_qty->HrefValue = "";
 
-			// cancel_date
-			$this->cancel_date->HrefValue = "";
+			// Product_Name
+			$this->Product_Name->HrefValue = "";
 
-			// cancel_reason
-			$this->cancel_reason->HrefValue = "";
+			// Product_Details
+			$this->Product_Details->HrefValue = "";
 
-			// Retailer_idRetailer
-			$this->Retailer_idRetailer->HrefValue = "";
+			// Company_Name
+			$this->Company_Name->HrefValue = "";
+
+			// GST
+			$this->GST->HrefValue = "";
+
+			// Address
+			$this->Address->HrefValue = "";
 		}
 
 		// Call Cell_Rendered event
 		if ($this->RowType == ROWTYPE_TOTAL) { // Summary row
 		} else {
-
-			// idSales_Order
-			$currentValue = $this->idSales_Order->CurrentValue;
-			$viewValue = &$this->idSales_Order->ViewValue;
-			$viewAttrs = &$this->idSales_Order->ViewAttrs;
-			$cellAttrs = &$this->idSales_Order->CellAttrs;
-			$hrefValue = &$this->idSales_Order->HrefValue;
-			$linkAttrs = &$this->idSales_Order->LinkAttrs;
-			$this->Cell_Rendered($this->idSales_Order, $currentValue, $viewValue, $viewAttrs, $cellAttrs, $hrefValue, $linkAttrs);
 
 			// Sales_Order_Date
 			$currentValue = $this->Sales_Order_Date->CurrentValue;
@@ -1074,41 +1108,59 @@ class sales_report_rpt extends sales_report_base
 			$linkAttrs = &$this->Credit_Due_date->LinkAttrs;
 			$this->Cell_Rendered($this->Credit_Due_date, $currentValue, $viewValue, $viewAttrs, $cellAttrs, $hrefValue, $linkAttrs);
 
-			// Net_Qty
-			$currentValue = $this->Net_Qty->CurrentValue;
-			$viewValue = &$this->Net_Qty->ViewValue;
-			$viewAttrs = &$this->Net_Qty->ViewAttrs;
-			$cellAttrs = &$this->Net_Qty->CellAttrs;
-			$hrefValue = &$this->Net_Qty->HrefValue;
-			$linkAttrs = &$this->Net_Qty->LinkAttrs;
-			$this->Cell_Rendered($this->Net_Qty, $currentValue, $viewValue, $viewAttrs, $cellAttrs, $hrefValue, $linkAttrs);
+			// Product_qty
+			$currentValue = $this->Product_qty->CurrentValue;
+			$viewValue = &$this->Product_qty->ViewValue;
+			$viewAttrs = &$this->Product_qty->ViewAttrs;
+			$cellAttrs = &$this->Product_qty->CellAttrs;
+			$hrefValue = &$this->Product_qty->HrefValue;
+			$linkAttrs = &$this->Product_qty->LinkAttrs;
+			$this->Cell_Rendered($this->Product_qty, $currentValue, $viewValue, $viewAttrs, $cellAttrs, $hrefValue, $linkAttrs);
 
-			// cancel_date
-			$currentValue = $this->cancel_date->CurrentValue;
-			$viewValue = &$this->cancel_date->ViewValue;
-			$viewAttrs = &$this->cancel_date->ViewAttrs;
-			$cellAttrs = &$this->cancel_date->CellAttrs;
-			$hrefValue = &$this->cancel_date->HrefValue;
-			$linkAttrs = &$this->cancel_date->LinkAttrs;
-			$this->Cell_Rendered($this->cancel_date, $currentValue, $viewValue, $viewAttrs, $cellAttrs, $hrefValue, $linkAttrs);
+			// Product_Name
+			$currentValue = $this->Product_Name->CurrentValue;
+			$viewValue = &$this->Product_Name->ViewValue;
+			$viewAttrs = &$this->Product_Name->ViewAttrs;
+			$cellAttrs = &$this->Product_Name->CellAttrs;
+			$hrefValue = &$this->Product_Name->HrefValue;
+			$linkAttrs = &$this->Product_Name->LinkAttrs;
+			$this->Cell_Rendered($this->Product_Name, $currentValue, $viewValue, $viewAttrs, $cellAttrs, $hrefValue, $linkAttrs);
 
-			// cancel_reason
-			$currentValue = $this->cancel_reason->CurrentValue;
-			$viewValue = &$this->cancel_reason->ViewValue;
-			$viewAttrs = &$this->cancel_reason->ViewAttrs;
-			$cellAttrs = &$this->cancel_reason->CellAttrs;
-			$hrefValue = &$this->cancel_reason->HrefValue;
-			$linkAttrs = &$this->cancel_reason->LinkAttrs;
-			$this->Cell_Rendered($this->cancel_reason, $currentValue, $viewValue, $viewAttrs, $cellAttrs, $hrefValue, $linkAttrs);
+			// Product_Details
+			$currentValue = $this->Product_Details->CurrentValue;
+			$viewValue = &$this->Product_Details->ViewValue;
+			$viewAttrs = &$this->Product_Details->ViewAttrs;
+			$cellAttrs = &$this->Product_Details->CellAttrs;
+			$hrefValue = &$this->Product_Details->HrefValue;
+			$linkAttrs = &$this->Product_Details->LinkAttrs;
+			$this->Cell_Rendered($this->Product_Details, $currentValue, $viewValue, $viewAttrs, $cellAttrs, $hrefValue, $linkAttrs);
 
-			// Retailer_idRetailer
-			$currentValue = $this->Retailer_idRetailer->CurrentValue;
-			$viewValue = &$this->Retailer_idRetailer->ViewValue;
-			$viewAttrs = &$this->Retailer_idRetailer->ViewAttrs;
-			$cellAttrs = &$this->Retailer_idRetailer->CellAttrs;
-			$hrefValue = &$this->Retailer_idRetailer->HrefValue;
-			$linkAttrs = &$this->Retailer_idRetailer->LinkAttrs;
-			$this->Cell_Rendered($this->Retailer_idRetailer, $currentValue, $viewValue, $viewAttrs, $cellAttrs, $hrefValue, $linkAttrs);
+			// Company_Name
+			$currentValue = $this->Company_Name->CurrentValue;
+			$viewValue = &$this->Company_Name->ViewValue;
+			$viewAttrs = &$this->Company_Name->ViewAttrs;
+			$cellAttrs = &$this->Company_Name->CellAttrs;
+			$hrefValue = &$this->Company_Name->HrefValue;
+			$linkAttrs = &$this->Company_Name->LinkAttrs;
+			$this->Cell_Rendered($this->Company_Name, $currentValue, $viewValue, $viewAttrs, $cellAttrs, $hrefValue, $linkAttrs);
+
+			// GST
+			$currentValue = $this->GST->CurrentValue;
+			$viewValue = &$this->GST->ViewValue;
+			$viewAttrs = &$this->GST->ViewAttrs;
+			$cellAttrs = &$this->GST->CellAttrs;
+			$hrefValue = &$this->GST->HrefValue;
+			$linkAttrs = &$this->GST->LinkAttrs;
+			$this->Cell_Rendered($this->GST, $currentValue, $viewValue, $viewAttrs, $cellAttrs, $hrefValue, $linkAttrs);
+
+			// Address
+			$currentValue = $this->Address->CurrentValue;
+			$viewValue = &$this->Address->ViewValue;
+			$viewAttrs = &$this->Address->ViewAttrs;
+			$cellAttrs = &$this->Address->CellAttrs;
+			$hrefValue = &$this->Address->HrefValue;
+			$linkAttrs = &$this->Address->LinkAttrs;
+			$this->Cell_Rendered($this->Address, $currentValue, $viewValue, $viewAttrs, $cellAttrs, $hrefValue, $linkAttrs);
 		}
 
 		// Call Row_Rendered event
@@ -1169,6 +1221,13 @@ class sales_report_rpt extends sales_report_base
 				if ($cntValues > 0) {
 					if (trim($arValues[0]) == "") // Select all
 						$arValues = INIT_VALUE;
+					$this->PopupName = $name;
+					if (IsAdvancedFilterValue($arValues) || $arValues == INIT_VALUE)
+						$this->PopupValue = $arValues;
+					if (!MatchedArray($arValues, @$_SESSION["sel_$name"])) {
+						if ($this->hasSessionFilterValues($name))
+							$this->ExpiredExtendedFilter = $name; // Clear extended filter for this field
+					}
 					$_SESSION["sel_$name"] = $arValues;
 					$_SESSION["rf_$name"] = Post("rf_$name", "");
 					$_SESSION["rt_$name"] = Post("rt_$name", "");
@@ -1180,18 +1239,26 @@ class sales_report_rpt extends sales_report_base
 		} elseif (Get("cmd") !== NULL) {
 			$cmd = Get("cmd");
 			if (SameText($cmd, "reset")) {
-				$this->clearSessionSelection("cancel_date");
+				$this->clearSessionSelection("Sales_Order_Date");
+				$this->clearSessionSelection("Credit_Due_date");
 				$this->resetPager();
 			}
 		}
 
 		// Load selection criteria to array
-		// Get cancel_date selected values
+		// Get Sales_Order_Date selected values
 
-		if (is_array(@$_SESSION["sel_sales_report_cancel_date"])) {
-			$this->loadSelectionFromSession("cancel_date");
-		} elseif (@$_SESSION["sel_sales_report_cancel_date"] == INIT_VALUE) { // Select all
-			$this->cancel_date->SelectionList = "";
+		if (is_array(@$_SESSION["sel_sales_report_Sales_Order_Date"])) {
+			$this->loadSelectionFromSession("Sales_Order_Date");
+		} elseif (@$_SESSION["sel_sales_report_Sales_Order_Date"] == INIT_VALUE) { // Select all
+			$this->Sales_Order_Date->SelectionList = "";
+		}
+
+		// Get Credit_Due_date selected values
+		if (is_array(@$_SESSION["sel_sales_report_Credit_Due_date"])) {
+			$this->loadSelectionFromSession("Credit_Due_date");
+		} elseif (@$_SESSION["sel_sales_report_Credit_Due_date"] == INIT_VALUE) { // Select all
+			$this->Credit_Due_date->SelectionList = "";
 		}
 	}
 
@@ -1201,8 +1268,6 @@ class sales_report_rpt extends sales_report_base
 		$this->GroupColumnCount = 0;
 		$this->SubGroupColumnCount = 0;
 		$this->DetailColumnCount = 0;
-		if ($this->idSales_Order->Visible)
-			$this->DetailColumnCount += 1;
 		if ($this->Sales_Order_Date->Visible)
 			$this->DetailColumnCount += 1;
 		if ($this->taxable_amount->Visible)
@@ -1213,13 +1278,17 @@ class sales_report_rpt extends sales_report_base
 			$this->DetailColumnCount += 1;
 		if ($this->Credit_Due_date->Visible)
 			$this->DetailColumnCount += 1;
-		if ($this->Net_Qty->Visible)
+		if ($this->Product_qty->Visible)
 			$this->DetailColumnCount += 1;
-		if ($this->cancel_date->Visible)
+		if ($this->Product_Name->Visible)
 			$this->DetailColumnCount += 1;
-		if ($this->cancel_reason->Visible)
+		if ($this->Product_Details->Visible)
 			$this->DetailColumnCount += 1;
-		if ($this->Retailer_idRetailer->Visible)
+		if ($this->Company_Name->Visible)
+			$this->DetailColumnCount += 1;
+		if ($this->GST->Visible)
+			$this->DetailColumnCount += 1;
+		if ($this->Address->Visible)
 			$this->DetailColumnCount += 1;
 	}
 
@@ -1359,16 +1428,17 @@ class sales_report_rpt extends sales_report_base
 		if ($resetSort) {
 			$this->setOrderBy("");
 			$this->setStartGroup(1);
-			$this->idSales_Order->setSort("");
 			$this->Sales_Order_Date->setSort("");
 			$this->taxable_amount->setSort("");
 			$this->tax_amount->setSort("");
 			$this->Total_Amount->setSort("");
 			$this->Credit_Due_date->setSort("");
-			$this->Net_Qty->setSort("");
-			$this->cancel_date->setSort("");
-			$this->cancel_reason->setSort("");
-			$this->Retailer_idRetailer->setSort("");
+			$this->Product_qty->setSort("");
+			$this->Product_Name->setSort("");
+			$this->Product_Details->setSort("");
+			$this->Company_Name->setSort("");
+			$this->GST->setSort("");
+			$this->Address->setSort("");
 
 		// Check for an Order parameter
 		} elseif ($orderBy <> "") {
@@ -1379,6 +1449,383 @@ class sales_report_rpt extends sales_report_base
 			$this->setStartGroup(1);
 		}
 		return $this->getOrderBy();
+	}
+
+	// Return extended filter
+	protected function getExtendedFilter()
+	{
+		global $FormError;
+		$filter = "";
+		if ($this->DrillDown)
+			return "";
+		$postBack = IsPost();
+		$restoreSession = TRUE;
+		$setupFilter = FALSE;
+
+		// Reset extended filter if filter changed
+		if ($postBack) {
+
+		// Reset search command
+		} elseif (Get("cmd", "") == "reset") {
+
+			// Load default values
+			$this->setSessionDropDownValue($this->Product_Name->DropDownValue, $this->Product_Name->AdvancedSearch->SearchOperator, "Product_Name"); // Field Product_Name
+			$this->setSessionDropDownValue($this->Company_Name->DropDownValue, $this->Company_Name->AdvancedSearch->SearchOperator, "Company_Name"); // Field Company_Name
+
+			//$setupFilter = TRUE; // No need to set up, just use default
+		} else {
+			$restoreSession = !$this->SearchCommand;
+
+			// Field Product_Name
+			if ($this->getDropDownValue($this->Product_Name)) {
+				$setupFilter = TRUE;
+			} elseif ($this->Product_Name->DropDownValue <> INIT_VALUE && !isset($_SESSION["x_sales_report_Product_Name"])) {
+				$setupFilter = TRUE;
+			}
+
+			// Field Company_Name
+			if ($this->getDropDownValue($this->Company_Name)) {
+				$setupFilter = TRUE;
+			} elseif ($this->Company_Name->DropDownValue <> INIT_VALUE && !isset($_SESSION["x_sales_report_Company_Name"])) {
+				$setupFilter = TRUE;
+			}
+			if (!$this->validateForm()) {
+				$this->setFailureMessage($FormError);
+				return $filter;
+			}
+		}
+
+		// Restore session
+		if ($restoreSession) {
+			$this->getSessionDropDownValue($this->Product_Name); // Field Product_Name
+			$this->getSessionDropDownValue($this->Company_Name); // Field Company_Name
+		}
+
+		// Call page filter validated event
+		$this->Page_FilterValidated();
+
+		// Build SQL
+		$this->buildDropDownFilter($this->Product_Name, $filter, $this->Product_Name->AdvancedSearch->SearchOperator, FALSE, TRUE); // Field Product_Name
+		$this->buildDropDownFilter($this->Company_Name, $filter, $this->Company_Name->AdvancedSearch->SearchOperator, FALSE, TRUE); // Field Company_Name
+
+		// Save parms to session
+		$this->setSessionDropDownValue($this->Product_Name->DropDownValue, $this->Product_Name->AdvancedSearch->SearchOperator, "Product_Name"); // Field Product_Name
+		$this->setSessionDropDownValue($this->Company_Name->DropDownValue, $this->Company_Name->AdvancedSearch->SearchOperator, "Company_Name"); // Field Company_Name
+
+		// Setup filter
+		if ($setupFilter) {
+		}
+
+		// Field Product_Name
+		LoadDropDownList($this->Product_Name->DropDownList, $this->Product_Name->DropDownValue);
+
+		// Field Company_Name
+		LoadDropDownList($this->Company_Name->DropDownList, $this->Company_Name->DropDownValue);
+		return $filter;
+	}
+
+	// Build dropdown filter
+	protected function buildDropDownFilter(&$fld, &$filterClause, $fldOpr, $default = FALSE, $saveFilter = FALSE)
+	{
+		$fldVal = ($default) ? $fld->DefaultDropDownValue : $fld->DropDownValue;
+		$sql = "";
+		if (is_array($fldVal)) {
+			foreach ($fldVal as $val) {
+				$wrk = $this->getDropDownFilter($fld, $val, $fldOpr);
+
+				// Call Page Filtering event
+				if (!StartsString("@@", $val))
+					$this->Page_Filtering($fld, $wrk, "dropdown", $fldOpr, $val);
+				if ($wrk <> "") {
+					if ($sql <> "")
+						$sql .= " OR " . $wrk;
+					else
+						$sql = $wrk;
+				}
+			}
+		} else {
+			$sql = $this->getDropDownFilter($fld, $fldVal, $fldOpr);
+
+			// Call Page Filtering event
+			if (!StartsString("@@", $fldVal))
+				$this->Page_Filtering($fld, $sql, "dropdown", $fldOpr, $fldVal);
+		}
+		if ($sql <> "") {
+			AddFilter($filterClause, $sql);
+			if ($saveFilter) $fld->CurrentFilter = $sql;
+		}
+	}
+
+	// Get dropdown filter
+	protected function getDropDownFilter(&$fld, $fldVal, $fldOpr)
+	{
+		$fldName = $fld->Name;
+		$fldExpression = $fld->Expression;
+		$fldDataType = $fld->DataType;
+		$fldDelimiter = $fld->Delimiter;
+		$fldVal = strval($fldVal);
+		if ($fldOpr == "") $fldOpr = "=";
+		$wrk = "";
+		if (SameString($fldVal, NULL_VALUE)) {
+			$wrk = $fldExpression . " IS NULL";
+		} elseif (SameString($fldVal, NOT_NULL_VALUE)) {
+			$wrk = $fldExpression . " IS NOT NULL";
+		} elseif (SameString($fldVal, EMPTY_VALUE)) {
+			$wrk = $fldExpression . " = ''";
+		} elseif (SameString($fldVal, ALL_VALUE)) {
+			$wrk = "1 = 1";
+		} else {
+			if (StartsString("@@", $fldVal)) {
+				$wrk = $this->getCustomFilter($fld, $fldVal, $this->Dbid);
+			} elseif ($fldDelimiter <> "" && trim($fldVal) <> "" && ($fldDataType == DATATYPE_STRING || $fldDataType == DATATYPE_MEMO)) {
+				$wrk = GetMultiValueSearchSql($fldExpression, trim($fldVal), $this->Dbid);
+			} else {
+				if ($fldVal <> "" && $fldVal <> INIT_VALUE) {
+					if ($fldDataType == DATATYPE_DATE && $fldOpr <> "") {
+						$wrk = GetDateFilterSql($fldExpression, $fldOpr, $fldVal, $fldDataType, $this->Dbid);
+					} else {
+						$wrk = GetFilterSql($fldOpr, $fldVal, $fldDataType, $this->Dbid);
+						if ($wrk <> "") $wrk = $fldExpression . $wrk;
+					}
+				}
+			}
+		}
+		return $wrk;
+	}
+
+	// Get custom filter
+	protected function getCustomFilter(&$fld, $fldVal, $dbid = 0)
+	{
+		$wrk = "";
+		if (is_array($fld->AdvancedFilters)) {
+			foreach ($fld->AdvancedFilters as $filter) {
+				if ($filter->ID == $fldVal && $filter->Enabled) {
+					$fldExpr = $fld->Expression;
+					$fn = $filter->FunctionName;
+					$wrkid = StartsString("@@", $filter->ID) ? substr($filter->ID, 2) : $filter->ID;
+					if ($fn <> "") {
+						$fn = PROJECT_NAMESPACE . $fn;
+						$wrk = $fn($fldExpr, $dbid);
+					} else
+						$wrk = "";
+					$this->Page_Filtering($fld, $wrk, "custom", $wrkid);
+					break;
+				}
+			}
+		}
+		return $wrk;
+	}
+
+	// Build extended filter
+	protected function buildExtendedFilter(&$fld, &$filterClause, $default = FALSE, $saveFilter = FALSE)
+	{
+		$wrk = GetExtendedFilter($fld, $default, $this->Dbid);
+		if (!$default)
+			$this->Page_Filtering($fld, $wrk, "extended", $fld->AdvancedSearch->SearchOperator, $fld->AdvancedSearch->SearchValue, $fld->AdvancedSearch->SearchCondition, $fld->AdvancedSearch->SearchOperator2, $fld->AdvancedSearch->SearchValue2);
+		if ($wrk <> "") {
+			AddFilter($filterClause, $wrk);
+			if ($saveFilter) $fld->CurrentFilter = $wrk;
+		}
+	}
+
+	// Get drop down value from querystring
+	protected function getDropDownValue(&$fld)
+	{
+		$parm = substr($fld->FieldVar, 2);
+		if (IsPost())
+			return FALSE; // Skip post back
+		$opr = Get("z_$parm");
+		if ($opr !== NULL)
+			$fld->AdvancedSearch->SearchOperator = $opr;
+		$val = Get("x_$parm");
+		if ($val !== NULL) {
+			if ($fld->isMultiSelect() && !is_array($val)) // Split values for modal lookup
+				$fld->DropDownValue = explode(LOOKUP_FILTER_VALUE_SEPARATOR, $val);
+			else
+				$fld->DropDownValue = $val;
+			return TRUE;
+		}
+		return FALSE;
+	}
+
+	// Get filter values from querystring
+	protected function getFilterValues(&$fld)
+	{
+		$parm = substr($fld->FieldVar, 2);
+		if (IsPost())
+			return; // Skip post back
+		$got = FALSE;
+		if (Get("x_$parm") !== NULL) {
+			$fld->AdvancedSearch->SearchValue = Get("x_$parm");
+			$got = TRUE;
+		}
+		if (Get("z_$parm") !== NULL) {
+			$fld->AdvancedSearch->SearchOperator = Get("z_$parm");
+			$got = TRUE;
+		}
+		if (Get("v_$parm") !== NULL) {
+			$fld->AdvancedSearch->SearchCondition = Get("v_$parm");
+			$got = TRUE;
+		}
+		if (Get("y_$parm") !== NULL) {
+			$fld->AdvancedSearch->SearchValue2 = Get("y_$parm");
+			$got = TRUE;
+		}
+		if (Get("w_$parm") !== NULL) {
+			$fld->AdvancedSearch->SearchOperator2 = Get("w_$parm");
+			$got = TRUE;
+		}
+		return $got;
+	}
+
+	// Set default ext filter
+	protected function setDefaultExtFilter(&$fld, $so1, $sv1, $sc, $so2, $sv2)
+	{
+		$fld->AdvancedSearch->SearchValueDefault = $sv1; // Default ext filter value 1
+		$fld->AdvancedSearch->SearchValue2Default = $sv2; // Default ext filter value 2 (if operator 2 is enabled)
+		$fld->AdvancedSearch->SearchOperatorDefault = $so1; // Default search operator 1
+		$fld->AdvancedSearch->SearchOperator2Default = $so2; // Default search operator 2 (if operator 2 is enabled)
+		$fld->AdvancedSearch->SearchConditionDefault = $sc; // Default search condition (if operator 2 is enabled)
+	}
+
+	// Apply default ext filter
+	protected function applyDefaultExtFilter(&$fld)
+	{
+		$fld->AdvancedSearch->SearchValue = $fld->AdvancedSearch->SearchValueDefault;
+		$fld->AdvancedSearch->SearchValue2 = $fld->AdvancedSearch->SearchValue2Default;
+		$fld->AdvancedSearch->SearchOperator = $fld->AdvancedSearch->SearchOperatorDefault;
+		$fld->AdvancedSearch->SearchOperator2 = $fld->AdvancedSearch->SearchOperator2Default;
+		$fld->AdvancedSearch->SearchCondition = $fld->AdvancedSearch->SearchConditionDefault;
+	}
+
+	// Check if Text Filter applied
+	protected function textFilterApplied(&$fld)
+	{
+		return (strval($fld->AdvancedSearch->SearchValue) <> strval($fld->AdvancedSearch->SearchValueDefault) ||
+			strval($fld->AdvancedSearch->SearchValue2) <> strval($fld->AdvancedSearch->SearchValue2Default) ||
+			(strval($fld->AdvancedSearch->SearchValue) <> "" &&
+				strval($fld->AdvancedSearch->SearchOperator) <> strval($fld->AdvancedSearch->SearchOperatorDefault)) ||
+			(strval($fld->AdvancedSearch->SearchValue2) <> "" &&
+				strval($fld->AdvancedSearch->SearchOperator2) <> strval($fld->AdvancedSearch->SearchOperator2Default)) ||
+			strval($fld->AdvancedSearch->SearchCondition) <> strval($fld->AdvancedSearch->SearchConditionDefault));
+	}
+
+	// Check if Non-Text Filter applied
+	protected function nonTextFilterApplied(&$fld)
+	{
+		if (is_array($fld->DropDownValue)) {
+			if (is_array($fld->DefaultDropDownValue)) {
+				if (count($fld->DefaultDropDownValue) <> count($fld->DropDownValue))
+					return TRUE;
+				else
+					return (count(array_diff($fld->DefaultDropDownValue, $fld->DropDownValue)) <> 0);
+			} else {
+				return TRUE;
+			}
+		} else {
+			if (is_array($fld->DefaultDropDownValue))
+				return TRUE;
+			else
+				$v1 = strval($fld->DefaultDropDownValue);
+			if ($v1 == INIT_VALUE)
+				$v1 = "";
+			$v2 = strval($fld->DropDownValue);
+			if ($v2 == INIT_VALUE || $v2 == ALL_VALUE)
+				$v2 = "";
+			return ($v1 <> $v2);
+		}
+	}
+
+	// Get dropdown value from session
+	protected function getSessionDropDownValue(&$fld)
+	{
+		$parm = substr($fld->FieldVar, 2);
+		$this->getSessionValue($fld->DropDownValue, 'x_sales_report_' . $parm);
+		$this->getSessionValue($fld->AdvancedSearch->SearchOperator, 'z_sales_report_' . $parm);
+	}
+
+	// Get filter values from session
+	protected function getSessionFilterValues(&$fld)
+	{
+		$parm = substr($fld->FieldVar, 2);
+		$this->getSessionValue($fld->AdvancedSearch->SearchValue, 'x_sales_report_' . $parm);
+		$this->getSessionValue($fld->AdvancedSearch->SearchOperator, 'z_sales_report_' . $parm);
+		$this->getSessionValue($fld->AdvancedSearch->SearchCondition, 'v_sales_report_' . $parm);
+		$this->getSessionValue($fld->AdvancedSearch->SearchValue2, 'y_sales_report_' . $parm);
+		$this->getSessionValue($fld->AdvancedSearch->SearchOperator2, 'w_sales_report_' . $parm);
+	}
+
+	// Get value from session
+	protected function getSessionValue(&$sv, $sn)
+	{
+		if (array_key_exists($sn, $_SESSION))
+			$sv = $_SESSION[$sn];
+	}
+
+	// Set dropdown value to session
+	protected function setSessionDropDownValue($sv, $so, $parm)
+	{
+		$_SESSION['x_sales_report_' . $parm] = $sv;
+		$_SESSION['z_sales_report_' . $parm] = $so;
+	}
+
+	// Set filter values to session
+	protected function setSessionFilterValues($sv1, $so1, $sc, $sv2, $so2, $parm)
+	{
+		$_SESSION['x_sales_report_' . $parm] = $sv1;
+		$_SESSION['z_sales_report_' . $parm] = $so1;
+		$_SESSION['v_sales_report_' . $parm] = $sc;
+		$_SESSION['y_sales_report_' . $parm] = $sv2;
+		$_SESSION['w_sales_report_' . $parm] = $so2;
+	}
+
+	// Check if has session filter values
+	protected function hasSessionFilterValues($parm)
+	{
+		return (@$_SESSION['x_' . $parm] <> "" && @$_SESSION['x_' . $parm] <> INIT_VALUE ||
+			@$_SESSION['x_' . $parm] <> "" && @$_SESSION['x_' . $parm] <> INIT_VALUE ||
+			@$_SESSION['y_' . $parm] <> "" && @$_SESSION['y_' . $parm] <> INIT_VALUE);
+	}
+
+	// Dropdown filter exist
+	protected function dropDownFilterExist(&$fld, $fldOpr)
+	{
+		$wrk = "";
+		$this->buildDropDownFilter($fld, $wrk, $fldOpr);
+		return ($wrk <> "");
+	}
+
+	// Extended filter exist
+	protected function extendedFilterExist(&$fld)
+	{
+		$extWrk = "";
+		$this->buildExtendedFilter($fld, $extWrk);
+		return ($extWrk <> "");
+	}
+
+	// Validate form
+	protected function validateForm()
+	{
+		global $ReportLanguage, $FormError;
+
+		// Initialize form error message
+		$FormError = "";
+
+		// Check if validation required
+		if (!SERVER_VALIDATE)
+			return ($FormError == "");
+
+		// Return validate result
+		$validateForm = ($FormError == "");
+
+		// Call Form_CustomValidate event
+		$formCustomError = "";
+		$validateForm = $validateForm && $this->Form_CustomValidate($formCustomError);
+		if ($formCustomError <> "") {
+			$FormError .= ($FormError <> "") ? "<p>&nbsp;</p>" : "";
+			$FormError .= $formCustomError;
+		}
+		return $validateForm;
 	}
 
 	// Clear selection stored in session
@@ -1409,6 +1856,16 @@ class sales_report_rpt extends sales_report_base
 		/**
 		* Set up default values for non Text filters
 		*/
+		// Field Product_Name
+
+		$this->Product_Name->DefaultDropDownValue = INIT_VALUE;
+		if (!$this->SearchCommand)
+			$this->Product_Name->DropDownValue = $this->Product_Name->DefaultDropDownValue;
+
+		// Field Company_Name
+		$this->Company_Name->DefaultDropDownValue = INIT_VALUE;
+		if (!$this->SearchCommand)
+			$this->Company_Name->DropDownValue = $this->Company_Name->DefaultDropDownValue;
 
 		/**
 		* Set up default values for extended filters
@@ -1425,8 +1882,10 @@ class sales_report_rpt extends sales_report_base
 		/**
 		* Set up default values for popup filters
 		*/
-		// Field cancel_date
-		// $this->cancel_date->DefaultSelectionList = ["val1", "val2"];
+		// Field Sales_Order_Date
+		// $this->Sales_Order_Date->DefaultSelectionList = ["val1", "val2"];
+		// Field Credit_Due_date
+		// $this->Credit_Due_date->DefaultSelectionList = ["val1", "val2"];
 
 	}
 
@@ -1434,8 +1893,20 @@ class sales_report_rpt extends sales_report_base
 	protected function checkFilter()
 	{
 
-		// Check cancel_date popup filter
-		if (!MatchedArray($this->cancel_date->DefaultSelectionList, $this->cancel_date->SelectionList))
+		// Check Sales_Order_Date popup filter
+		if (!MatchedArray($this->Sales_Order_Date->DefaultSelectionList, $this->Sales_Order_Date->SelectionList))
+			return TRUE;
+
+		// Check Credit_Due_date popup filter
+		if (!MatchedArray($this->Credit_Due_date->DefaultSelectionList, $this->Credit_Due_date->SelectionList))
+			return TRUE;
+
+		// Check Product_Name extended filter
+		if ($this->nonTextFilterApplied($this->Product_Name))
+			return TRUE;
+
+		// Check Company_Name extended filter
+		if ($this->nonTextFilterApplied($this->Company_Name))
 			return TRUE;
 		return FALSE;
 	}
@@ -1450,18 +1921,55 @@ class sales_report_rpt extends sales_report_base
 		$captionClass = $this->isExport("email") ? "ew-filter-caption-email" : "ew-filter-caption";
 		$captionSuffix = $this->isExport("email") ? ": " : "";
 
-		// Field cancel_date
+		// Field Sales_Order_Date
 		$extWrk = "";
 		$wrk = "";
-		if (is_array($this->cancel_date->SelectionList))
-			$wrk = JoinArray($this->cancel_date->SelectionList, ", ", DATATYPE_DATE, 0, $this->Dbid);
+		if (is_array($this->Sales_Order_Date->SelectionList))
+			$wrk = JoinArray($this->Sales_Order_Date->SelectionList, ", ", DATATYPE_DATE, 0, $this->Dbid);
 		$filter = "";
 		if ($extWrk <> "")
 			$filter .= "<span class=\"ew-filter-value\">$extWrk</span>";
 		elseif ($wrk <> "")
 			$filter .= "<span class=\"ew-filter-value\">$wrk</span>";
 		if ($filter <> "")
-			$filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->cancel_date->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+			$filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->Sales_Order_Date->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+
+		// Field Credit_Due_date
+		$extWrk = "";
+		$wrk = "";
+		if (is_array($this->Credit_Due_date->SelectionList))
+			$wrk = JoinArray($this->Credit_Due_date->SelectionList, ", ", DATATYPE_DATE, 0, $this->Dbid);
+		$filter = "";
+		if ($extWrk <> "")
+			$filter .= "<span class=\"ew-filter-value\">$extWrk</span>";
+		elseif ($wrk <> "")
+			$filter .= "<span class=\"ew-filter-value\">$wrk</span>";
+		if ($filter <> "")
+			$filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->Credit_Due_date->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+
+		// Field Product_Name
+		$extWrk = "";
+		$wrk = "";
+		$this->buildDropDownFilter($this->Product_Name, $extWrk, $this->Product_Name->AdvancedSearch->SearchOperator);
+		$filter = "";
+		if ($extWrk <> "")
+			$filter .= "<span class=\"ew-filter-value\">$extWrk</span>";
+		elseif ($wrk <> "")
+			$filter .= "<span class=\"ew-filter-value\">$wrk</span>";
+		if ($filter <> "")
+			$filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->Product_Name->caption() . "</span>" . $captionSuffix . $filter . "</div>";
+
+		// Field Company_Name
+		$extWrk = "";
+		$wrk = "";
+		$this->buildDropDownFilter($this->Company_Name, $extWrk, $this->Company_Name->AdvancedSearch->SearchOperator);
+		$filter = "";
+		if ($extWrk <> "")
+			$filter .= "<span class=\"ew-filter-value\">$extWrk</span>";
+		elseif ($wrk <> "")
+			$filter .= "<span class=\"ew-filter-value\">$wrk</span>";
+		if ($filter <> "")
+			$filterList .= "<div><span class=\"" . $captionClass . "\">" . $this->Company_Name->caption() . "</span>" . $captionSuffix . $filter . "</div>";
 		$divdataclass = "";
 
 		// Show Filters
@@ -1484,15 +1992,53 @@ class sales_report_rpt extends sales_report_base
 		// Initialize
 		$filterList = "";
 
-		// Field cancel_date
+		// Field Sales_Order_Date
 		$wrk = "";
 		if ($wrk == "") {
-			$wrk = ($this->cancel_date->SelectionList <> INIT_VALUE) ? $this->cancel_date->SelectionList : "";
+			$wrk = ($this->Sales_Order_Date->SelectionList <> INIT_VALUE) ? $this->Sales_Order_Date->SelectionList : "";
 			if (is_array($wrk))
 				$wrk = implode("||", $wrk);
 			if ($wrk <> "")
-				$wrk = "\"sel_cancel_date\":\"" . JsEncode($wrk) . "\"";
+				$wrk = "\"sel_Sales_Order_Date\":\"" . JsEncode($wrk) . "\"";
 		}
+		if ($wrk <> "") {
+			if ($filterList <> "") $filterList .= ",";
+			$filterList .= $wrk;
+		}
+
+		// Field Credit_Due_date
+		$wrk = "";
+		if ($wrk == "") {
+			$wrk = ($this->Credit_Due_date->SelectionList <> INIT_VALUE) ? $this->Credit_Due_date->SelectionList : "";
+			if (is_array($wrk))
+				$wrk = implode("||", $wrk);
+			if ($wrk <> "")
+				$wrk = "\"sel_Credit_Due_date\":\"" . JsEncode($wrk) . "\"";
+		}
+		if ($wrk <> "") {
+			if ($filterList <> "") $filterList .= ",";
+			$filterList .= $wrk;
+		}
+
+		// Field Product_Name
+		$wrk = "";
+		$wrk = ($this->Product_Name->DropDownValue <> INIT_VALUE) ? $this->Product_Name->DropDownValue : "";
+		if (is_array($wrk))
+			$wrk = implode("||", $wrk);
+		if ($wrk <> "")
+			$wrk = "\"x_Product_Name\":\"" . JsEncode($wrk) . "\"";
+		if ($wrk <> "") {
+			if ($filterList <> "") $filterList .= ",";
+			$filterList .= $wrk;
+		}
+
+		// Field Company_Name
+		$wrk = "";
+		$wrk = ($this->Company_Name->DropDownValue <> INIT_VALUE) ? $this->Company_Name->DropDownValue : "";
+		if (is_array($wrk))
+			$wrk = implode("||", $wrk);
+		if ($wrk <> "")
+			$wrk = "\"x_Company_Name\":\"" . JsEncode($wrk) . "\"";
 		if ($wrk <> "") {
 			if ($filterList <> "") $filterList .= ",";
 			$filterList .= $wrk;
@@ -1522,16 +2068,54 @@ class sales_report_rpt extends sales_report_base
 		if (!is_array($filter))
 			return FALSE;
 
-		// Field cancel_date
+		// Field Sales_Order_Date
 		$restoreFilter = FALSE;
-		if (array_key_exists("sel_cancel_date", $filter)) {
-			$wrk = $filter["sel_cancel_date"];
+		if (array_key_exists("sel_Sales_Order_Date", $filter)) {
+			$wrk = $filter["sel_Sales_Order_Date"];
 			$wrk = explode("||", $wrk);
-			$this->cancel_date->SelectionList = $wrk;
-			$_SESSION["sel_sales_report_cancel_date"] = $wrk;
+			$this->Sales_Order_Date->SelectionList = $wrk;
+			$_SESSION["sel_sales_report_Sales_Order_Date"] = $wrk;
 			$restoreFilter = TRUE;
 		}
 		if (!$restoreFilter) { // Clear filter
+		}
+
+		// Field Credit_Due_date
+		$restoreFilter = FALSE;
+		if (array_key_exists("sel_Credit_Due_date", $filter)) {
+			$wrk = $filter["sel_Credit_Due_date"];
+			$wrk = explode("||", $wrk);
+			$this->Credit_Due_date->SelectionList = $wrk;
+			$_SESSION["sel_sales_report_Credit_Due_date"] = $wrk;
+			$restoreFilter = TRUE;
+		}
+		if (!$restoreFilter) { // Clear filter
+		}
+
+		// Field Product_Name
+		$restoreFilter = FALSE;
+		if (array_key_exists("x_Product_Name", $filter)) {
+			$wrk = $filter["x_Product_Name"];
+			if (strpos($wrk, "||") !== FALSE)
+				$wrk = explode("||", $wrk);
+			$this->setSessionDropDownValue($wrk, @$filter["z_Product_Name"], "Product_Name");
+			$restoreFilter = TRUE;
+		}
+		if (!$restoreFilter) { // Clear filter
+			$this->setSessionDropDownValue(INIT_VALUE, "", "Product_Name");
+		}
+
+		// Field Company_Name
+		$restoreFilter = FALSE;
+		if (array_key_exists("x_Company_Name", $filter)) {
+			$wrk = $filter["x_Company_Name"];
+			if (strpos($wrk, "||") !== FALSE)
+				$wrk = explode("||", $wrk);
+			$this->setSessionDropDownValue($wrk, @$filter["z_Company_Name"], "Company_Name");
+			$restoreFilter = TRUE;
+		}
+		if (!$restoreFilter) { // Clear filter
+			$this->setSessionDropDownValue(INIT_VALUE, "", "Company_Name");
 		}
 		return TRUE;
 	}
@@ -1595,12 +2179,20 @@ class sales_report_rpt extends sales_report_base
 		$wrk = "";
 		if ($this->DrillDown)
 			return "";
-			if (is_array($this->cancel_date->SelectionList)) {
-				$filter = FilterSql($this->cancel_date, "`cancel_date`", DATATYPE_DATE, $this->Dbid);
+			if (is_array($this->Sales_Order_Date->SelectionList)) {
+				$filter = FilterSql($this->Sales_Order_Date, "`Sales_Order_Date`", DATATYPE_DATE, $this->Dbid);
 
 				// Call Page Filtering event
-				$this->Page_Filtering($this->cancel_date, $filter, "popup");
-				$this->cancel_date->CurrentFilter = $filter;
+				$this->Page_Filtering($this->Sales_Order_Date, $filter, "popup");
+				$this->Sales_Order_Date->CurrentFilter = $filter;
+				AddFilter($wrk, $filter);
+			}
+			if (is_array($this->Credit_Due_date->SelectionList)) {
+				$filter = FilterSql($this->Credit_Due_date, "`Credit_Due_date`", DATATYPE_DATE, $this->Dbid);
+
+				// Call Page Filtering event
+				$this->Page_Filtering($this->Credit_Due_date, $filter, "popup");
+				$this->Credit_Due_date->CurrentFilter = $filter;
 				AddFilter($wrk, $filter);
 			}
 		return $wrk;

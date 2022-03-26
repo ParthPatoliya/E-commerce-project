@@ -26,7 +26,7 @@
     <?php
     include 'backend/db_connect.php';
     // $id=$_GET['idProduct_Master'];
-    $selectSalesOrder = "SELECT * FROM sales_order ORDER BY idSales_Order DESC";
+    $selectSalesOrder = "SELECT * FROM sales_order NATURAL JOIN retailer WHERE sales_order.Retailer_idRetailer=retailer.idRetailer ORDER BY idSales_Order DESC";
     $result = mysqli_query($conn, $selectSalesOrder);
 
     ?>
@@ -40,7 +40,7 @@
             <thead>
               <tr>
                 <td>OrderNo. </td>
-                <td>Retailer ID </td>
+                <td>Retailer Name</td>
                 <td>Price</td>
                 <td>Total Qty</td>
                 <td>Order Date </td>
@@ -61,7 +61,7 @@
               echo '
 
                               <th scope="row">' . $saleOrderRow['idSales_Order'] . '</th>
-        <th scope="row">' . $saleOrderRow['Retailer_idRetailer'] . '</th>
+        <th scope="row">' . $saleOrderRow['first_name'] . ' ' . $saleOrderRow['last_name'] . '</th>
         <th>' . $saleOrderRow['Total_Amount'] . '</th>
          <th scope="row">' . $saleOrderRow['Net_Qty'] . '</th>
           <th>' . $saleOrderRow["Sales_Order_Date"] . '</th>

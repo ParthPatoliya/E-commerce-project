@@ -11,22 +11,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $bank_name = $_POST['bank_name'];
     $address = $_POST['address'];
     $email = $_POST['email'];
-    $password = $_POST['password'];
+    $password = $_POST['password1'];
+    $password2 = $_POST['password2'];
     $gst_no = $_POST['gst_no'];
     $phone_no = $_POST['phone_no'];
     $bank_ifsc = $_POST['bank_ifsc'];
     $bank_acc = $_POST['bank_acc'];
-
-    $sql = "INSERT INTO `retailer`(`first_name`, `last_name`, `Company_Name`, `Bank_Name`, `Address`, `E-mail`, `Password`, `GST`, `Phone`, `Bank_IFSC`, `Bank_acc`)
-   VALUES ('$first_name','$last_name','$company_name','$bank_name','$address','$email','$password','$gst_no','$phone_no','$bank_ifsc','$bank_acc')";
-    $result = mysqli_query($conn, $sql);
-    if ($result) {
-        //echo "inserted";
-        header("location:login.php");
+    if ($password != $password2) {
+        echo '<script> 
+            alert("Password not match");</script>';
     } else {
-        echo '<div class="alert alert-warning">
+
+        $sql = "INSERT INTO `retailer`(`first_name`, `last_name`, `Company_Name`, `Bank_Name`, `Address`, `E-mail`, `Password`, `GST`, `Phone`, `Bank_IFSC`, `Bank_acc`)
+   VALUES ('$first_name','$last_name','$company_name','$bank_name','$address','$email','$password','$gst_no','$phone_no','$bank_ifsc','$bank_acc')";
+        $result = mysqli_query($conn, $sql);
+        if ($result) {
+            //echo "inserted";
+            header("location:login.php");
+        } else {
+            echo '<div class="alert alert-warning">
 			<b>Please check the details..</b>
 					 </div>';
+        }
     }
 }
 
@@ -52,6 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Main Style CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/responsive.css">
+
 </head>
 
 <body class="page-template belle">
@@ -180,10 +187,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <input type="email" name="email" placeholder="" id="CustomerEmail" class="" autocorrect="off" autocapitalize="off" autofocus="" required>
                                         </div>
                                     </div>
+
                                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="form-group">
-                                            <label for="CustomerPassword">Password</label>
-                                            <input type="password" value="" name="password" placeholder="" id="CustomerPassword" class="" required>
+                                            <label for="Password">Password</label>
+                                            <input type="password" value="" name="password1" placeholder="" id="Password" class="" required>
+                                            <label for="CustomerPassword">Confirm Password</label>
+                                            <input type="password" value="" name="password2" placeholder="" id="CustomerPassword" class="" required>
 
                                             <input type="checkbox" onclick="myFunction()">
                                             <label for="CustomerPassword">Show Password</label>
@@ -216,19 +226,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <input type="tel" name="phone_no" pattern="[0-9]{10}" placeholder="" id="LastName" required>
                                         </div>
                                     </div>
-
-                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="form-group">
-                                            <label for="LastName">Bank IFSC</label>
-                                            <input type="text" name="bank_ifsc" pattern="^[A-Z]{4}[0-9]{7}$" placeholder="" id="LastName" required>
-                                        </div>
-                                    </div>
                                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                                         <div class="form-group">
                                             <label for="LastName">Bank Account Number</label>
                                             <input type="text" name="bank_acc" pattern="^[0-9]{8}[0-9]{4}$" placeholder="" id="LastName" required>
                                         </div>
                                     </div>
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="form-group">
+                                            <label for="LastName">Bank IFSC</label>
+                                            <input type="text" name="bank_ifsc" pattern="^[A-Z]{4}[0-9]{7}$" placeholder="" id="LastName" required>
+                                        </div>
+                                    </div>
+
 
                                 </div>
                                 <div class="row">
@@ -243,8 +253,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
         </div>
-        <!--End Body Content-->
 
+        <!--End Body Content-->
         <!--Footer-->
         <?php
         include "backend/footer.php";

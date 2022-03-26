@@ -7,7 +7,7 @@
     <!-- Spinner Start -->
     <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
+            <!-- <span class="sr-only">Loading...</span> -->
         </div>
     </div>
     <!-- Spinner End -->
@@ -116,8 +116,7 @@
                         <tr class="text-dark">
                             <th scope="col">Customer</th>
                             <th scope="col">Order Date</th>
-                            <th scope="col">Invoice</th>
-
+                            <th scope="col">Order ID</th>
                             <th scope="col">Amount</th>
                             <th scope="col">Credit Due Date</th>
                             <th scope="col">Action</th>
@@ -136,7 +135,7 @@
                                     <td>' . $saleOrderRow["first_name"] . ' ' . $saleOrderRow["last_name"] . '</td> 
                             
                                     <td>' . $saleOrderRow["Sales_Order_Date"] . '</td>
-                                   <td> <a href="../invoice.php?orderid=' . $saleOrderRow['idSales_Order'] . '">ODR00 ' . $saleOrderRow['idSales_Order'] . '</a></td>
+                                   <td> <a href="showOrderDetail.php?orderid=' . $saleOrderRow['idSales_Order'] . '">ODR00 ' . $saleOrderRow['idSales_Order'] . '</a></td>
                                    
                                     <td>₹ ' . $saleOrderRow['Total_Amount'] . '</td>
                                     <td> ' . date_format($date, "Y-m-d") . '</td>

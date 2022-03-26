@@ -49,13 +49,15 @@ $num4 = mysqli_num_rows($ress);
                             } else if ($row['is_cancel'] == 1) {
                                 $status = 'Cancelled <br>Cancel Reason : ' . $row['cancel_reason'] . '<br>Cancel Date : ' . $row['cancel_date'] . '</b><th></th>';
                             } else if ($row['is_cancel'] == 0) {
-                                // if ($row14['is_replace'] == 1) {
-                                //     $status = "Accepted" . "<br><b>Oreder Replace on :" . $row14['Sales_Replace_Date'] . " </b>
-                                // &nbsp  &nbsp <a href='invoice.php?orderid=" . $row['idSales_Order'] . "'><button type='submit'><b>Download Invoice</b></button></a>";
-                                // } else {
-                                $status = "Accepted" . "<br><b>Credit due date : ( " . date_format($date, "Y-m-d") . " )</b>
+                                if ($row14 > 0) {
+                                    if ($row14['is_replace'] == 1) {
+                                        $status = "Accepted" . "<br><b>Oreder Replace on :" . $row14['Sales_Replace_Date'] . " </b>
                                 &nbsp  &nbsp <a href='invoice.php?orderid=" . $row['idSales_Order'] . "'><button type='submit'><b>Download Invoice</b></button></a>";
-                                // }
+                                    } else {
+                                        $status = "Accepted" . "<br><b>Credit due date : ( " . date_format($date, "Y-m-d") . " )</b>
+                                &nbsp  &nbsp <a href='invoice.php?orderid=" . $row['idSales_Order'] . "'><button type='submit'><b>Download Invoice</b></button></a>";
+                                    }
+                                }
                             }
                             echo '
 
@@ -74,13 +76,14 @@ $num4 = mysqli_num_rows($ress);
                                                            </th>  ';
                             } else if ($row['is_cancel'] == 1) {
                             } else if ($row['is_cancel'] == 0) {
-                                // if ($row14['is_replace'] == null) {
-                                echo '<th><a href="salesReplace.php?orderid=' . $row['idSales_Order'] . '" >
+
+                                if ($row14['is_replace'] == null) {
+                                    echo '<th><a href="salesReplace.php?orderid=' . $row['idSales_Order'] . '" >
                                     <button type="button" class="btn btn-primary">Replace</button></a><br> </th> ';
-                                // } else {
-                                //     $isrep = 1;
-                                //     echo '<th>Your order is replaced</th>';
-                                // }
+                                } else {
+                                    $isrep = 1;
+                                    echo '<th>Your order is replaced</th>';
+                                }
                             }
                             // include "track.php";
                             echo '</th>

@@ -54,7 +54,7 @@
                         <ul class="customer-links list-inline">
                             <li><a href="login.php">Login</a></li>
                             <li><a href="register.php">Create Account</a></li>
-                         
+
                         </ul>
                     </div>
                 </div>
@@ -75,9 +75,9 @@
                     <div class="col-2 col-sm-3 col-md-3 col-lg-8">
                         <div class="d-block d-lg-none">
                             <button type="button" class="btn--link site-header__menu js-mobile-nav-toggle mobile-nav--open">
-                        	<i class="icon anm anm-times-l"></i>
-                            <i class="anm anm-bars-r"></i>
-                        </button>
+                                <i class="icon anm anm-times-l"></i>
+                                <i class="anm anm-bars-r"></i>
+                            </button>
                         </div>
                         <!--Desktop Menu-->
                         <nav class="grid__item" id="AccessibleNav">
@@ -113,7 +113,7 @@
                 <div class="row">
                     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="empty-page-content text-center">
-                            <h1>Invalid E-mail or Password</h1>
+                            <h3>Invalid E-mail or Password</h3>
                             <p>Please Enter Valid Details..!</p>
                             <p><a href="login.php" class="btn btn--has-icon-after">Continue shopping <i class="fa fa-caret-right" aria-hidden="true"></i></a></p>
                         </div>

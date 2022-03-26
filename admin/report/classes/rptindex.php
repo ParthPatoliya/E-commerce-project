@@ -11,7 +11,7 @@ class rptindex
 	public $PageID = 'rptindex';
 
 	// Project ID
-	public $ProjectID = "{8E8DDB7A-3730-4802-B86F-ABED82524C31}";
+	public $ProjectID = "{4533CF47-2E40-428D-81EF-FA3CBA4A8B21}";
 
 	// Page object name
 	public $PageObjName = 'rptindex';
@@ -302,7 +302,7 @@ class rptindex
 		// If session expired, show session expired message
 		if (Get("expired") == "1")
 			$this->setFailureMessage($ReportLanguage->phrase("SessionExpired"));
-		$this->terminate("product_masterrpt.php"); // Exit and go to default page
+		$this->terminate("sales_reportrpt.php"); // Exit and go to default page
 	}
 
 	// Page Load event

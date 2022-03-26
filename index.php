@@ -101,7 +101,7 @@ $result = mysqli_query($conn, $sql);
                                       </a> </div>
                                       <div class="product-form__item--submit">
                                            <a  href="index.php?idRetailers=' . $rows["idRetailer"] . '' . '&idProducts=' . $row["idProduct_Master"] . '">
-                                             <button  type="button" name="idRetailer"> Add To Wishlist</button>
+                                             <button  type="button" name="idRetailer"> <i class="icon anm anm-heart-l" aria-hidden="true"></i> <span>Add to Wishlist</span></a></button>
                                              </a>
                                             </div> 
                                       <div class="product-body"  >
@@ -147,7 +147,7 @@ $result = mysqli_query($conn, $sql);
     <!--Collection Tab slider-->
 
 
-<br><br>
+    <br><br>
 
     <!-- Store Feature -->
     <div class="tab-slider-product section">
@@ -191,11 +191,12 @@ $result = mysqli_query($conn, $sql);
 										<a href="productlayout.php?idRetailer=' . $rows["idRetailer"] . '' . '&idProduct=' . $row21["idProduct_Master"] . '" name="idProduct">
                                         <img src="admin/' . $row21['image_url'] . '" alt="image not found" width="300px" height="400px">
 								
-                                      </a> </div>
+                                      </a> </div><br>
                                       <div class="product-form__item--submit">
                                            <a  href="index.php?idRetailers=' . $rows["idRetailer"] . '' . '&idProducts=' . $row21["idProduct_Master"] . '">
-                                             <button  type="button" name="idRetailer"> Add To Wishlist</button>
+                                             <button  type="button" name="idRetailer"> <i class="icon anm anm-heart-l" aria-hidden="true"></i> <span>Add to Wishlist</span></a></button>
                                              </a>
+                                           
                                             </div> 
                                       <div class="product-body"  >
 										 

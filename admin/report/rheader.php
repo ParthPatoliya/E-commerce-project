@@ -166,7 +166,7 @@ ew.vars = <?php echo JsonEncode($CLIENT_VAR) ?>;
 	<aside class="<?php echo $SIDEBAR_CLASS ?>">
 		<!-- Brand Logo //** Note: Only licensed users are allowed to change the logo ** -->
 		<a href="#" class="brand-link">
-			<span class="brand-text">PHP Report Maker 12</span>
+			<img src="<?php echo $RELATIVE_PATH ?>phprptimages/logo (1).png" alt="" class="brand-image ew-brand-image">
 		</a>
 		<!-- Sidebar -->
 		<div class="sidebar">

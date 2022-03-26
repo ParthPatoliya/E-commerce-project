@@ -253,6 +253,7 @@ include "backend/header.php";
 
                                 $result = mysqli_query($conn, $sql);
                                 if ($result) {
+
                                     echo '<div class="alert alert-warning">
 					                <b>Thanks for your feedback ..!!</b>
 					                </div>';
@@ -334,13 +335,13 @@ include "backend/header.php";
 
                                                                 <div class="spr-form-review-title">
                                                                     <label class="spr-form-label" for="review_title_10508262282">Review Title</label>
-                                                                    <input class="spr-form-input spr-form-input-text " name="Title" id="review_title_10508262282" type="text" name="review[title]" value="" placeholder="Give your review a title">
+                                                                    <input class="spr-form-input spr-form-input-text " name="Title" id="review_title_10508262282" type="text" name="review[title]" value="" placeholder="Give your review a title" required>
                                                                 </div>
 
                                                                 <div class="spr-form-review-body">
                                                                     <label class="spr-form-label" for="review_body_10508262282">Body of Review <span class="spr-form-review-body-charactersremaining">(1500)</span></label>
                                                                     <div class="spr-form-input">
-                                                                        <textarea class="spr-form-input spr-form-input-textarea " name="Desc" id="review_body_10508262282" data-product-id="10508262282" name="review[body]" rows="10" placeholder="Write your comments here"></textarea>
+                                                                        <textarea class="spr-form-input spr-form-input-textarea " name="Desc" id="review_body_10508262282" data-product-id="10508262282" name="review[body]" rows="10" placeholder="Write your comments here" required></textarea>
                                                                     </div>
                                                                 </div>
                                                             </fieldset>
@@ -358,7 +359,10 @@ include "backend/header.php";
                                                                 <div class="spr-review-header">
                                                                 <a href="deletefeedback.php?idProduct=' . $_GET['idProduct'] . '&idFeedback=' . $rowww['idFeedback'] . '" class="remove" ><i class="anm anm-times-l" aria-hidden="true"></i></a>&nbsp &nbsp &nbsp
                                                                 <span class="product-review spr-starratings spr-review-header-starratings"><span class="reviewLink"><i class="fa fa-star"></i>
-                                                                <i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i><i class="font-13 fa fa-star"></i></span></span>
+                                                                <i class="font-13 fa fa-star"></i>
+                                                                <i class="font-13 fa fa-star"></i>
+                                                                <i class="font-13 fa fa-star"></i>
+                                                                <i class="font-13 fa fa-star"></i></span></span>
                                                                     <h3 class="spr-review-header-title">' . $rowww['Title'] . '</h3>
                                                                     <span class="spr-review-header-byline"><strong>' . $rowww['Name'] . '</strong> on <strong>' . $rowww['Feedback_Date'] . '</strong></span>
                                                                 </div>
@@ -547,7 +551,7 @@ include "backend/footer.php";
 
     function saveToTheDB() {
         $.ajax({
-            url: "index.php",
+            url: "productlayout.php",
             method: "POST",
             dataType: 'json',
             data: {
@@ -559,7 +563,9 @@ include "backend/footer.php";
                 uID = r.id;
                 localStorage.setItem('uID', uID);
             }
+
         });
+        // console.log(ratedIndex);
     }
 
     function setStars(max) {

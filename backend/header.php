@@ -62,6 +62,7 @@
                 echo '<div class="alert alert-warning">
 					<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
 					<b>Product is already added into the cart Continue Shopping..!</b>
+                    <script> window.location.href="index.php";</script>
 					 </div>';
             } else {
                 echo "something wrong";
@@ -91,7 +92,7 @@
       <meta name="description" content="description">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <!-- Favicon -->
-      <link rel="shortcut icon" href="assets/images/favicon.png" />
+      <link rel="shortcut icon" href="assets/images/logo (1).png" />
       <!-- Plugins CSS -->
       <link rel="stylesheet" href="assets/css/plugins.css">
       <!-- Bootstap CSS -->

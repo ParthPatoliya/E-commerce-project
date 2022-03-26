@@ -37,7 +37,7 @@ define(PROJECT_NAMESPACE . "PATH_DELIMITER", ((IS_WINDOWS) ? "\\" : "/")); // Ph
 define(PROJECT_NAMESPACE . "UNFORMAT_YEAR", 50); // Unformat year
 define(PROJECT_NAMESPACE . "PROJECT_NAME", "project2"); // Project name
 define(PROJECT_NAMESPACE . "CONFIG_FILE_FOLDER", PROJECT_NAME); // Config file name
-define(PROJECT_NAMESPACE . "RANDOM_KEY", 'WKIK66wI4TOJlTwD'); // Random key for encryption
+define(PROJECT_NAMESPACE . "RANDOM_KEY", 'e2wOrcJD2UHwJ1d4'); // Random key for encryption
 define(PROJECT_NAMESPACE . "ENCRYPTION_KEY", ''); // Encryption key for data protection
 define(PROJECT_NAMESPACE . "PROJECT_STYLESHEET_FILENAME", "phprptcss/project2.css"); // Project stylesheet file name
 define(PROJECT_NAMESPACE . "PROJECT_CHARSET", ""); // Project charset
@@ -46,7 +46,7 @@ define(PROJECT_NAMESPACE . "EMAIL_CHARSET", PROJECT_CHARSET); // Email charset
 define(PROJECT_NAMESPACE . "HIGHLIGHT_COMPARE", TRUE); // Highlight compare mode, TRUE(case-insensitive)|FALSE(case-sensitive)
 define(PROJECT_NAMESPACE . "FONT_SIZE", 14);
 define(PROJECT_NAMESPACE . "TEMP_IMAGE_FONT", "DejaVuSans"); // Font for temp files
-$PROJECT_ID = "{8E8DDB7A-3730-4802-B86F-ABED82524C31}"; // Project ID (GUID)
+$PROJECT_ID = "{4533CF47-2E40-428D-81EF-FA3CBA4A8B21}"; // Project ID (GUID)
 $RELATED_PROJECT_ID = "";
 $RELATED_LANGUAGE_FOLDER = "";
 $COMPOSITE_KEY_SEPARATOR = ","; // Composite key separator
