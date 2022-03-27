@@ -108,82 +108,133 @@
       <script src="http://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
   </head>
 
-  <header>
 
-      <body class="template-index belle template-index-belle">
-          <div id="pre-loader">
-              <img src="assets/images/loader.gif" alt="Loading..." />
+
+  <body class="template-index belle template-index-belle">
+      <div id="pre-loader">
+          <img src="assets/images/loader.gif" alt="Loading..." />
+      </div>
+      <div class="pageWrapper">
+          <!--Search Form Drawer-->
+          <div class="search">
+              <div class="search__form">
+                  <!-- SEARCH BAR -->
+                  <div class="col-md-6">
+                      <div class="header-search">
+                          <form method="post">
+
+                              <input name="service_find" id="service_find" type="text" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input" />
+                              <a href="index.php">
+                                  <button type="button" name="del"><i class="icon icon anm anm-times-l"></i></button>
+                              </a>
+                              <table class="w-full whitespace-no-wrap" id="tbl_body">
+                              </table>
+                              </label><br>
+                              <script>
+                                  $(document).on("keyup", "#service_find", function() {
+                                      var service_find = $("#service_find").val();
+                                      $.ajax({
+                                          url: ' getData.php',
+                                          type: 'POST',
+                                          data: {
+                                              service_find: service_find
+                                          },
+                                          success: function(data) {
+                                              $("#tbl_body").html(data);
+                                              $("#pagination").hide();
+                                          }
+                                      });
+                                  });
+                              </script>
+                          </form>
+                      </div>
+                      <!-- <button type="button" class="search-trigger"><i class="icon anm anm-search-l"></i></button> -->
+                      <!-- <input type="text" class="form-control" name="live_search" id="live_search" autocomplete="off" placeholder="Search ..."> -->
+
+                      <!-- </div> -->
+
+                      </script>
+                  </div>
+                  <!-- /SEARCH BAR -->
+              </div>
+              <!-- row -->
           </div>
-          <div class="pageWrapper">
-              <!--Search Form Drawer-->
-              <div class="search">
-                  <div class="search__form">
+          <!-- container -->
+      </div>
+      <!-- /MAIN HEADER -->
 
+      <div id="search_result"></div>
+      <!-- /HEADER -->
+      <!--Search Form Drawer-->
 
-                      <input type="text" class="form-control" name="live_search" id="live_search" autocomplete="off" placeholder="Search ...">
+      <!-- <a href="" id="one">Helo</a> -->
+      <!--End Search Form Drawer-->
+      <!-- <div class="site-header__search"> -->
+
+      <!-- <input type="text" class="form-control" name="live_search" id="live_search" autocomplete="off" placeholder="Search ...">
 
                       <button type="button" class="search-trigger close-btn"><i class="anm anm-times-l"></i></button>
-                      <div id="search_result"></div>
+                      <div id="search_result"></div> -->
+      </div>
+      </div>
+      <!--End Search Form Drawer-->
+      <!--Top Header-->
+      <div class="top-header">
+          <div class="container-fluid">
+              <div class="row">
+                  <div class="col-10 col-sm-8 col-md-5 col-lg-4">
+                      <p class="phone-no"><i class="anm anm-phone-s"></i>+91 9016485585</p>
+                  </div>
+
+                  <div class="col-sm-4 col-md-4 col-lg-4 d-none d-lg-none d-md-block d-lg-block">
+                  </div>
+                  <div class="col-2 col-sm-4 col-md-3 col-lg-4 text-right">
+                      <span class="user-menu d-block d-lg-none"><i class="anm anm-user-al" aria-hidden="true"></i></span>
+                      <ul class="customer-links list-inline">
+                          <li><a href="profile.php"><?php echo $rows['first_name']; ?></a></li>
+
+                          <!-- C:\xampp\phpMyAdmin\htdocs\project\login.php -->
+                          <li><a href="logout.php">Logout</a></li>
+                          <!-- <li><a href="register.php">Create Account</a></li> -->
+                          <li><a href="wishlist.php?idRetailer='.$rows['idRetailer'].'">Wishlist</a></li>
+
+
+                          <li><a href="myorder.php">My Orders</a></li>
+
+                      </ul>
                   </div>
               </div>
-              <!--End Search Form Drawer-->
-              <!--Top Header-->
-              <div class="top-header">
-                  <div class="container-fluid">
-                      <div class="row">
-                          <div class="col-10 col-sm-8 col-md-5 col-lg-4">
-                              <p class="phone-no"><i class="anm anm-phone-s"></i>+91 9016485585</p>
-                          </div>
-
-                          <div class="col-sm-4 col-md-4 col-lg-4 d-none d-lg-none d-md-block d-lg-block">
-                          </div>
-                          <div class="col-2 col-sm-4 col-md-3 col-lg-4 text-right">
-                              <span class="user-menu d-block d-lg-none"><i class="anm anm-user-al" aria-hidden="true"></i></span>
-                              <ul class="customer-links list-inline">
-                                  <li><a href="profile.php"><?php echo $rows['first_name']; ?></a></li>
-
-                                  <!-- C:\xampp\phpMyAdmin\htdocs\project\login.php -->
-                                  <li><a href="logout.php">Logout</a></li>
-                                  <!-- <li><a href="register.php">Create Account</a></li> -->
-                                  <li><a href="wishlist.php?idRetailer='.$rows['idRetailer'].'">Wishlist</a></li>
-
-
-                                  <li><a href="myorder.php">My Orders</a></li>
-
-                              </ul>
-                          </div>
+          </div>
+      </div>
+      <!--End Top Header-->
+      <!--Header-->
+      <div class="header-wrap classicHeader animated d-flex">
+          <div class="container-fluid">
+              <div class="row align-items-center">
+                  <!--Desktop Logo-->
+                  <div class="logo col-md-2 col-lg-2 d-none d-lg-block">
+                      <a href="index.php">
+                          <img src="assets/images/logo (1).png" alt="Skumar" title="Skumar" />
+                      </a>
+                  </div>
+                  <!--End Desktop Logo-->
+                  <div class="col-2 col-sm-3 col-md-3 col-lg-8">
+                      <div class="d-block d-lg-none">
+                          <button type="button" class="btn--link site-header__menu js-mobile-nav-toggle mobile-nav--open">
+                              <i class="icon anm anm-times-l"></i>
+                              <i class="anm anm-bars-r"></i>
+                          </button>
                       </div>
-                  </div>
-              </div>
-              <!--End Top Header-->
-              <!--Header-->
-              <div class="header-wrap classicHeader animated d-flex">
-                  <div class="container-fluid">
-                      <div class="row align-items-center">
-                          <!--Desktop Logo-->
-                          <div class="logo col-md-2 col-lg-2 d-none d-lg-block">
-                              <a href="index.php">
-                                  <img src="assets/images/logo (1).png" alt="Skumar" title="Skumar" />
-                              </a>
-                          </div>
-                          <!--End Desktop Logo-->
-                          <div class="col-2 col-sm-3 col-md-3 col-lg-8">
-                              <div class="d-block d-lg-none">
-                                  <button type="button" class="btn--link site-header__menu js-mobile-nav-toggle mobile-nav--open">
-                                      <i class="icon anm anm-times-l"></i>
-                                      <i class="anm anm-bars-r"></i>
-                                  </button>
-                              </div>
-                              <!--Desktop Menu-->
-                              <nav class="grid__item" id="AccessibleNav">
-                                  <!-- for mobile -->
-                                  <ul id="siteNav" class="site-nav medium center hidearrow">
-                                      <li class="lvl1 parent megamenu"><a href="index.php">Home <i class="anm anm-angle-down-l"></i></a>
-                                          <!-- <div class="megamenu style1"> -->
-                                          <ul class="grid mmWrapper">
-                                              <li class="grid__item large-up--one-whole">
-                                                  <ul class="grid">
-                                                      <!-- <li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Home Group 1</a>
+                      <!--Desktop Menu-->
+                      <nav class="grid__item" id="AccessibleNav">
+                          <!-- for mobile -->
+                          <ul id="siteNav" class="site-nav medium center hidearrow">
+                              <li class="lvl1 parent megamenu"><a href="index.php">Home <i class="anm anm-angle-down-l"></i></a>
+                                  <!-- <div class="megamenu style1"> -->
+                                  <ul class="grid mmWrapper">
+                                      <li class="grid__item large-up--one-whole">
+                                          <ul class="grid">
+                                              <!-- <li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Home Group 1</a>
                                                             <ul class="subLinks">
                                                                 <li class="lvl-2"><a href="index.php" class="site-nav lvl-2">Home 1 - Classic</a></li>
                                                             </ul>
@@ -191,90 +242,90 @@
 
 
 
-                                                  </ul>
-                                              </li>
                                           </ul>
-                                          <!-- </div> -->
                                       </li>
-                                      <li class="lvl1 parent megamenu"><a href="#">Category <i class="anm anm-angle-down-l"></i></a>
-                                          <div class="megamenu style2">
-                                              <ul class="grid mmWrapper">
-                                                  <li class="grid__item one-whole">
-                                                      <ul class="grid">
-                                                          <?php
-                                                            $cat = "SELECT * FROM product_category";
-                                                            $resultcat = mysqli_query($conn, $cat);
+                                  </ul>
+                                  <!-- </div> -->
+                              </li>
+                              <li class="lvl1 parent megamenu"><a href="#">Category <i class="anm anm-angle-down-l"></i></a>
+                                  <div class="megamenu style2">
+                                      <ul class="grid mmWrapper">
+                                          <li class="grid__item one-whole">
+                                              <ul class="grid">
+                                                  <?php
+                                                    $cat = "SELECT * FROM product_category";
+                                                    $resultcat = mysqli_query($conn, $cat);
 
-                                                            while ($rowcat = mysqli_fetch_assoc($resultcat)) {
-                                                                echo '<form method="post">
+                                                    while ($rowcat = mysqli_fetch_assoc($resultcat)) {
+                                                        echo '<form method="post">
                                                           <li class="grid__item lvl-1 col-md-1 col-lg-3"><a href="productlayout1.php?idCategory=' . $rowcat['idProduct_Category'] . '&catName=' . $rowcat['Category_Name'] . '" class="site-nav lvl-1">' . $rowcat['Category_Name'] . '</a>
                                                           </li></form>
                                                            ';
-                                                            } ?>
-                                                          <!-- <li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Product Features</a>
+                                                    } ?>
+                                                  <!-- <li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Product Features</a>
                                                               <ul class="subLinks">
                                                                   <li class="lvl-2"><a href="product-layout.php" class="site-nav lvl-2">Short Description</a></li>
                                                               </ul>
                                                           </li> -->
-                                                          <!-- <li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Product Features</a>
+                                                  <!-- <li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Product Features</a>
                                                               <ul class="subLinks">
                                                                   <li class="lvl-2"><a href="product-layout-1.php" class="site-nav lvl-2">Product with Variant Image</a></li>
                                                               </ul>
                                                           </li> -->
-                                                          <!-- <li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Product Features</a>
+                                                  <!-- <li class="grid__item lvl-1 col-md-3 col-lg-3"><a href="#" class="site-nav lvl-1">Product Features</a>
                                                               <ul class="subLinks">
                                                                   <li class="lvl-2"><a href="product-layout-1.php" class="site-nav lvl-2">Product Accordion</a></li>
                                                               </ul>
                                                           </li> -->
-                                                      </ul>
-                                                  </li>
-                                                  <!-- <li class="grid__item large-up--one-whole imageCol">
+                                              </ul>
+                                          </li>
+                                          <!-- <li class="grid__item large-up--one-whole imageCol">
                                                       <a href="#"><img src="assets/images/megamenu-bg2.jpg" alt=""></a>
                                                   </li> -->
-                                              </ul>
-                                          </div>
-                                      </li>
-                                      <li class="lvl1"><a href="index.php?#main"><b>Buy Now!</b> <i class="anm anm-angle-down-l"></i></a></li>
-                                  </ul>
-                              </nav>
-                              <!--End Desktop Menu-->
-                          </div>
-                          <!--Mobile Logo-->
-                          <div class="col-6 col-sm-6 col-md-6 col-lg-2 d-block d-lg-none mobile-logo">
-                              <div class="logo">
-                                  <a href="index.php">
-                                      <img src="assets/images/logo (1).png" alt="Skumar" title="Skumar" />
-                                  </a>
-                              </div>
-                          </div>
-                          <!--Mobile Logo-->
-                          <div class="col-4 col-sm-3 col-md-3 col-lg-2">
-                              <div class="site-cart">
-                                  <a href="#" class="site-header__cart" title="Cart">
-                                      <i class="icon anm anm-bag-l"></i>
-                                      <span id="CartCount" class="site-header__cart-count" data-cart-render="item_count"><?php echo $num ?></span>
-                                  </a>
-                                  <!--Minicart Popup-->
-                                  <div id="header-cart" class="block block-cart">
-                                      <ul class="mini-products-list">
-                                          <?php
-                                            $a = 1;
-                                            $subtotal = 0;
-                                            while ($row = mysqli_fetch_array($result)) {
-                                                $b = 0;
-                                                $b = $row['QTY'];
-                                                $c = 0;
-                                                $c = $row['Product_Price'];
-                                                $taxable = 0;
-                                                $taxable = $b * $c;
+                                      </ul>
+                                  </div>
+                              </li>
+                              <li class="lvl1"><a href="index.php?#main"><b>Buy Now!</b> <i class="anm anm-angle-down-l"></i></a></li>
+                          </ul>
+                      </nav>
+                      <!--End Desktop Menu-->
+                  </div>
+                  <!--Mobile Logo-->
+                  <div class="col-6 col-sm-6 col-md-6 col-lg-2 d-block d-lg-none mobile-logo">
+                      <div class="logo">
+                          <a href="index.php">
+                              <img src="assets/images/logo (1).png" alt="Skumar" title="Skumar" />
+                          </a>
+                      </div>
+                  </div>
+                  <!--Mobile Logo-->
+                  <div class="col-4 col-sm-3 col-md-3 col-lg-2">
+                      <div class="site-cart">
+                          <a href="#" class="site-header__cart" title="Cart">
+                              <i class="icon anm anm-bag-l"></i>
+                              <span id="CartCount" class="site-header__cart-count" data-cart-render="item_count"><?php echo $num ?></span>
+                          </a>
+                          <!--Minicart Popup-->
+                          <div id="header-cart" class="block block-cart">
+                              <ul class="mini-products-list">
+                                  <?php
+                                    $a = 1;
+                                    $subtotal = 0;
+                                    while ($row = mysqli_fetch_array($result)) {
+                                        $b = 0;
+                                        $b = $row['QTY'];
+                                        $c = 0;
+                                        $c = $row['Product_Price'];
+                                        $taxable = 0;
+                                        $taxable = $b * $c;
 
-                                                $gst = 0;
-                                                $gst = ($taxable * 12) / 100;
-                                                $total = $taxable + $gst;
-                                                $subtotal = $subtotal + $total;
+                                        $gst = 0;
+                                        $gst = ($taxable * 12) / 100;
+                                        $total = $taxable + $gst;
+                                        $subtotal = $subtotal + $total;
 
 
-                                                echo '
+                                        echo '
                                         
                                     <li class="item">
                                         <a class="product-image" href="productlayout.php?idRetailer=' . $rows["idRetailer"] . '' . '&idProduct=' . $row["idProduct_Master"] . '">
@@ -300,79 +351,79 @@
                                         </div>
                                     </li>
                                     ';
-                                            }  ?>
-                                      </ul>
+                                    }  ?>
+                              </ul>
 
 
 
 
-                                      <div class="total">
-                                          <div class="total-in">
-                                              <span class="label">Cart Subtotal:</span><span class="product-price"><span class="money">₹<?php echo  $subtotal ?></span></span>
-                                          </div>
-
-
-
-                                          <div class="buttonSet text-center">
-                                              <?php
-                                                if ($subtotal == 0) {
-                                                    echo '<lable><b> Your Cart is Empty  <a href="index.php?#main"><button > <u>click here</u></button></a> to buy.. <b/></lable>';
-                                                } else {
-                                                    echo '<a href="checkout.php" class="btn btn-secondary btn--small">Checkout</a>';
-                                                } ?>
-                                          </div>
-                                      </div>
-
-
+                              <div class="total">
+                                  <div class="total-in">
+                                      <span class="label">Cart Subtotal:</span><span class="product-price"><span class="money">₹<?php echo  $subtotal ?></span></span>
                                   </div>
-                                  <!--EndMinicart Popup-->
+
+
+
+                                  <div class="buttonSet text-center">
+                                      <?php
+                                        if ($subtotal == 0) {
+                                            echo '<lable><b> Your Cart is Empty  <a href="index.php?#main"><button > <u>click here</u></button></a> to buy.. <b/></lable>';
+                                        } else {
+                                            echo '<a href="checkout.php" class="btn btn-secondary btn--small">Checkout</a>';
+                                        } ?>
+                                  </div>
                               </div>
 
-
-                              <div class="site-header__search">
-
-                                  <button type="button" class="search-trigger"><i class="icon anm anm-search-l"></i></button>
-                                  <!-- <input type="text" class="form-control" name="live_search" id="live_search" autocomplete="off" placeholder="Search ..."> -->
-
-                              </div>
-
-                              <script type="text/javascript">
-                                  $(document).ready(function() {
-                                      $("#live_search").keyup(function() {
-                                          var query = $(this).val();
-                                          if (query != "") {
-                                              $.ajax({
-                                                  url: 'ajax-live-search.php',
-                                                  method: 'POST',
-                                                  data: {
-                                                      query: query
-                                                  },
-                                                  success: function(data) {
-                                                      $('#search_result').html(data);
-                                                      $('#search_result').css('display', 'block');
-                                                      $("#live_search").focusout(function() {
-                                                          $('#search_result').css('display', 'none');
-                                                      });
-                                                      $("#live_search").focusin(function() {
-                                                          $('#search_result').css('display', 'block');
-                                                      });
-                                                  }
-                                              });
-                                          } else {
-                                              $('#search_result').css('display', 'none');
-                                          }
-                                      });
-                                  });
-                              </script>
 
                           </div>
-
+                          <!--EndMinicart Popup-->
                       </div>
 
 
-                  </div>
-              </div>
-          </div>
-          <!--End Header-->
+                      <div class="site-header__search">
 
-  </header>
+                          <button type="button" class="search-trigger"><i class="icon anm anm-search-l"></i></button>
+                          <!-- <input type="text" class="form-control" name="live_search" id="live_search" autocomplete="off" placeholder="Search ..."> -->
+
+                      </div>
+
+                      <!-- <script type="text/javascript">
+                      $(document).ready(function() {
+                          $("#live_search").keyup(function() {
+                              var query = $(this).val();
+                              if (query != "") {
+                                  $.ajax({
+                                      url: 'ajax-live-search.php',
+                                      method: 'POST',
+                                      data: {
+                                          query: query
+                                      },
+                                      success: function(data) {
+                                          $('#search_result').html(data);
+                                          $('#search_result').css('display', 'block');
+                                          $("#live_search").focusout(function() {
+                                              $('#search_result').css('display', 'none');
+                                          });
+                                          $("#live_search").focusin(function() {
+                                              $('#search_result').css('display', 'block');
+                                          });
+                                      }
+                                  });
+                              } else {
+                                  $('#search_result').css('display', 'none');
+                              }
+                          });
+                      });
+                  </script> -->
+
+                  </div>
+
+              </div>
+
+
+          </div>
+      </div>
+      </div>
+      <!--End Header-->
+
+      </header>

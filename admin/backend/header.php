@@ -21,8 +21,7 @@ if ($num == 1) {
         <meta content="" name="description">
 
         <!-- Favicon -->
-        <link href="img/favicon.ico" rel="icon">
-
+        <link rel="shortcut icon" href="assets/images/logo (1).png" />
         <!-- Google Web Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,7 +67,7 @@ if ($num == 1) {
                     <a href="#" class="nav-link dropdown-toggle me-lg-5" data-bs-toggle="dropdown">
                         <img class="rounded-circle me-lg-4" src="img/user.jpeg" alt="" style="width: 40px; height: 40px;">
                         <span class="d-none d-lg-inline-flex me-lg-0 "><?php echo $row['company_name']; ?></span>
-                        
+
                     </a>
                     <div class="dropdown-menu dropdown-menu-end bg-light border-1 rounded-0 rounded-bottom m-0 me-lg-6">
                         <a href="profile.php" class="dropdown-item">My Profile</a>
@@ -78,8 +77,8 @@ if ($num == 1) {
             </div>
         </nav>
     </header>
-    
-    
+
+
 <?php
 }
 ?>

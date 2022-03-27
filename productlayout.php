@@ -25,6 +25,40 @@ include "backend/header.php";
 
         $result = mysqli_query($conn, $sql);
         //  $num = mysqli_num_rows($result);
+        $sql8 = "SELECT * FROM `feedback` JOIN product_master on feedback.Product_Master_idProduct_Master=product_master.idProduct_Master JOIN `retailer` on feedback.Retailer_idRetailer=retailer.idRetailer  WHERE product_master.idProduct_Master=$id";
+        $result8 = mysqli_query($conn, $sql8);
+        $num8 = mysqli_num_rows($result8);
+        $sql9 = "SELECT * FROM `feedback` WHERE feedback.Product_Master_idProduct_Master =$id ";
+        $result9 = mysqli_query($conn, $sql9);
+        if (mysqli_num_rows($result9) > 0) {
+            $r1 = 0;
+            $r2 = 0;
+            $r3 = 0;
+            $r4 = 0;
+            $r5 = 0;
+            while ($row9 = mysqli_fetch_assoc($result9)) {
+                if ($row9['rating_value'] == 1) {
+                    $r1++;
+                } elseif ($row9['rating_value'] == 2) {
+                    $r2++;
+                } elseif ($row9['rating_value'] == 3) {
+                    $r3++;
+                } elseif ($row9['rating_value'] == 4) {
+                    $r4++;
+                } elseif ($row9['rating_value'] == 5) {
+                    $r5++;
+                }
+            }
+
+            $total = $r1 + $r2 + $r3 + $r4 + $r5;
+            $total1 = $num8 * 5;
+            $avrage = ($total / $total1) * 10;
+            $avrage1 = number_format($avrage);
+            echo  $total;
+            echo $total1;
+            // echo $avrage;
+            // echo $avrage1;
+        }
 
         ?>
         <!-- ------------------------------------------------------------------------------------- -->
@@ -114,12 +148,23 @@ include "backend/header.php";
                                 <div class="product-single__meta">
                                     <div class="product-review">
                                         <a class="reviewLink" href="#tab2">
-                                            <!-- <i class="font-13 fa fa-star"></i>
-                                            <i class="font-13 fa fa-star"></i>
-                                            <i class="font-13 fa fa-star"></i>
-                                            <i class="font-13 fa fa-star-o"></i>
-                                            <i class="font-13 fa fa-star-o"></i> -->
-                                            <span class="spr-badge-caption"><b><?php echo $count ?> : Reviews</span>
+
+                                            <?php
+                                            if (mysqli_num_rows($result9) > 0) {
+
+                                                $g = $avrage1;
+                                                for ($i = 0; $i < $g; $i++) {
+                                                    echo '
+                                                        <i class="font-13 fa fa-star"></i>';
+                                                }
+                                                $h = 5 - $g;
+                                                for ($j = 0; $j < $h; $j++) {
+                                                    echo '
+                                                        <i class="fa fa-star-o empty"></i>';
+                                                }
+                                            }
+                                            ?>
+                                            <span class="spr-badge-caption"><b> <?php echo $count ?> : Reviews</span>
                                         </a>
                                     </div>
                                     <!-- -------------------------------------------------------- -->
@@ -240,6 +285,7 @@ include "backend/header.php";
                                 $email = $_POST['email'];
                                 $title = $_POST['Title'];
                                 $desc = $_POST['Desc'];
+                                $rating = $_POST['rate'];
 
                                 //  echo $id;
                                 // echo $pid;
@@ -248,8 +294,8 @@ include "backend/header.php";
                                 // echo $title;
                                 // echo $desc;
                                 //   $sql="INSERT INTO feedback (`Name`,`email`,`Title`,`Desc`,`Product_Master_idProduct_Master `,`Sales_Order_idSales_Order `) VALUES ('$name','$email','$title','$desc','$pid','$id')";
-                                $sql = "INSERT INTO `feedback` (`Name`, `email`, `Title`, `Desc`, `Feedback_Date`, `Product_Master_idProduct_Master`, `Sales_Order_idSales_Order`,`Retailer_idRetailer`)
-                            VALUES ('$name', '$email', '$title', '$desc', current_timestamp(), '$pid', '$id','$_COOKIE[idRetailer]')";
+                                $sql = "INSERT INTO `feedback` (`Name`, `email`, `Title`, `Desc`, `Feedback_Date`,`rating_value`, `Product_Master_idProduct_Master`, `Sales_Order_idSales_Order`,`Retailer_idRetailer`)
+                            VALUES ('$name', '$email', '$title', '$desc', current_timestamp(),'$rating', '$pid', '$id','$_COOKIE[idRetailer]')";
 
                                 $result = mysqli_query($conn, $sql);
                                 if ($result) {
@@ -286,11 +332,21 @@ include "backend/header.php";
                                                 <div class="spr-header clearfix">
                                                     <div class="spr-summary">
                                                         <span class="product-review"><a class="reviewLink">
-                                                                <!-- <i class="font-13 fa fa-star"></i>
-                                                                <i class="font-13 fa fa-star"></i>
-                                                                <i class="font-13 fa fa-star"></i>
-                                                                <i class="font-13 fa fa-star-o"></i>
-                                                                <i class="font-13 fa fa-star-o"></i> -->
+                                                                <?php
+                                                                if (mysqli_num_rows($result9) > 0) {
+
+                                                                    $g = $avrage1;
+                                                                    for ($i = 0; $i < $g; $i++) {
+                                                                        echo '
+                                                        <i class="fa fa-star"></i>';
+                                                                    }
+                                                                    $h = 5 - $g;
+                                                                    for ($j = 0; $j < $h; $j++) {
+                                                                        echo '
+                                                        <i class="fa fa-star-o empty"></i>';
+                                                                    }
+                                                                }
+                                                                ?>
                                                             </a><span class="spr-summary-actions-togglereviews">Based on <?php echo $count ?> reviews</span></span>
 
                                                         <span class="spr-summary-actions">
@@ -323,13 +379,14 @@ include "backend/header.php";
                                                                 <div class="spr-form-review-rating">
                                                                     <label class="spr-form-label">Rating</label>
                                                                     <div class="spr-form-input spr-starrating">
-                                                                        <div class="product-review"><a class="reviewLink" href="#">
-                                                                                <i class="fa fa-star fa-2x" data-index="0"></i>
-                                                                                <i class="fa fa-star fa-2x" data-index="1"></i>
-                                                                                <i class="fa fa-star fa-2x" data-index="2"></i>
-                                                                                <i class="fa fa-star fa-2x" data-index="3"></i>
-                                                                                <i class="fa fa-star fa-2x" data-index="4"></i>
-                                                                            </a></div>
+                                                                        <div class="product-review">
+
+                                                                            <input type="radio" id="rat" name="rate" value="1">1<i class="fa fa-star fa-2x"></i>
+                                                                            <input type="radio" id="rat" name="rate" value="2">2<i class="fa fa-star fa-2x"></i>
+                                                                            <input type="radio" id="rat" name="rate" value="3">3<i class="fa fa-star fa-2x"></i>
+                                                                            <input type="radio" id="rat" name="rate" value="4">4<i class="fa fa-star fa-2x"></i>
+                                                                            <input type="radio" id="rat" name="rate" value="5">5<i class="fa fa-star fa-2x"></i>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
 
@@ -350,30 +407,45 @@ include "backend/header.php";
                                                             </fieldset>
                                                         </form>
                                                     </div>
-                                                <?php
+                                                    <div class="spr-reviews">
+                                                        <div class="spr-review">
+                                                        <?php
 
-                                                while ($rowww = mysqli_fetch_assoc($resulttt)) {
-                                                    echo '
-                                                        <div class="spr-reviews">
-                                                            <div class="spr-review">
-                                                                <div class="spr-review-header">
+                                                        while ($rowww = mysqli_fetch_assoc($resulttt)) {
+
+
+
+                                                            echo ' <div class="spr-review-header">
                                                                 <a href="deletefeedback.php?idProduct=' . $_GET['idProduct'] . '&idFeedback=' . $rowww['idFeedback'] . '" class="remove" ><i class="anm anm-times-l" aria-hidden="true"></i></a>&nbsp &nbsp &nbsp
-                                                                <span class="product-review spr-starratings spr-review-header-starratings"><span class="reviewLink"><i class="fa fa-star"></i>
-                                                                <i class="font-13 fa fa-star"></i>
-                                                                <i class="font-13 fa fa-star"></i>
-                                                                <i class="font-13 fa fa-star"></i>
-                                                                <i class="font-13 fa fa-star"></i></span></span>
+                                                                <span class="product-review spr-starratings spr-review-header-starratings">
+                                                                <span class="reviewLink">';
+                                                            $p = $rowww["rating_value"];
+                                                            for ($i = 0; $i < $p; $i++) {
+                                                                echo '
+                                                       <i class="fa fa-star fa-2x"></i>';
+                                                            }
+                                                            $q = 5 - $p;
+                                                            for ($j = 0; $j < $q; $j++) {
+                                                                echo '
+                                                        <i class="fa fa-star-o empty"></i>';
+                                                            }
+
+
+                                                            echo '  </span></span>
                                                                     <h3 class="spr-review-header-title">' . $rowww['Title'] . '</h3>
                                                                     <span class="spr-review-header-byline"><strong>' . $rowww['Name'] . '</strong> on <strong>' . $rowww['Feedback_Date'] . '</strong></span>
                                                                 </div>
                                                                 <div class="spr-review-content">
                                                                     <p class="spr-review-content-body">' . $rowww['Desc'] . '</p>
                                                                 </div>
-                                                            </div>
+                                                         
                                                             
-                                                        </div>';
-                                                }
-                                            } ?>
+                                                        ';
+                                                        }
+                                                    } ?>
+
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -518,64 +590,65 @@ include "backend/footer.php";
     </div>
 </div>
 <script>
-    var ratedIndex = -1,
-        uID = 0;
+    //     var ratedIndex = -1,
+    //         uID = 0;
 
-    $(document).ready(function() {
-        resetStarColors();
+    //     $(document).ready(function() {
+    //         resetStarColors();
 
-        if (localStorage.getItem('ratedIndex') != null) {
-            setStars(parseInt(localStorage.getItem('ratedIndex')));
-            uID = localStorage.getItem('uID');
-        }
+    //         if (localStorage.getItem('ratedIndex') != null) {
+    //             setStars(parseInt(localStorage.getItem('ratedIndex')));
+    //             uID = localStorage.getItem('uID');
+    //         }
 
-        $('.fa-star').on('click', function() {
-            ratedIndex = parseInt($(this).data('index'));
-            localStorage.setItem('ratedIndex', ratedIndex);
-            saveToTheDB();
-        });
+    //         $('.fa-star').on('click', function() {
+    //             ratedIndex = parseInt($(this).data('index'));
+    //             localStorage.setItem('ratedIndex', ratedIndex);
+    //             saveToTheDB();
+    //         });
 
-        $('.fa-star').mouseover(function() {
-            resetStarColors();
-            var currentIndex = parseInt($(this).data('index'));
-            setStars(currentIndex);
-        });
+    //         $('.fa-star').mouseover(function() {
+    //             resetStarColors();
+    //             var currentIndex = parseInt($(this).data('index'));
+    //             setStars(currentIndex);
+    //         });
 
-        $('.fa-star').mouseleave(function() {
-            resetStarColors();
+    //         $('.fa-star').mouseleave(function() {
+    //             resetStarColors();
 
-            if (ratedIndex != -1)
-                setStars(ratedIndex);
-        });
-    });
+    //             if (ratedIndex != -1)
+    //                 setStars(ratedIndex);
+    //         });
+    //     });
 
-    function saveToTheDB() {
-        $.ajax({
-            url: "productlayout.php",
-            method: "POST",
-            dataType: 'json',
-            data: {
-                save: 1,
-                uID: uID,
-                ratedIndex: ratedIndex
-            },
-            success: function(r) {
-                uID = r.id;
-                localStorage.setItem('uID', uID);
-            }
+    //     function saveToTheDB() {
+    //         $.ajax({
+    //             url: "productlayout.php",
+    //             method: "POST",
+    //             dataType: 'json',
+    //             data: {
+    //                 save: 1,
+    //                 uID: uID,
+    //                 ratedIndex: ratedIndex
+    //             },
+    //             success: function(r) {
+    //                 uID = r.id;
+    //                 localStorage.setItem('uID', uID);
+    //             }
 
-        });
-        // console.log(ratedIndex);
-    }
+    //         });
+    //         // console.log(ratedIndex);
+    //     }
 
-    function setStars(max) {
-        for (var i = 0; i <= max; i++)
-            $('.fa-star:eq(' + i + ')').css('color', 'green');
-    }
+    //     function setStars(max) {
+    //         for (var i = 0; i <= max; i++)
+    //             $('.fa-star:eq(' + i + ')').css('color', 'green');
+    //     }
 
-    function resetStarColors() {
-        $('.fa-star').css('color', 'gray');
-    }
+    //     function resetStarColors() {
+    //         $('.fa-star').css('color', 'gray');
+    //     }
+    // 
 </script>
 </body>
 <!-- <script type='text/javascript'>
