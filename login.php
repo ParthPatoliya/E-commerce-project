@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="assets/css/responsive.css">
 </head>
 
-<body class="page-template ">
+<body class="page-template">
     <div class="pageWrapper">
         <!--Search Form Drawer-->
         <div class="search">
@@ -183,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                                         <p class="mb-4">
 
-                                            <!-- <a href="forgotpassword-master/requestRest.php" id="RecoverPassword">Forgot your password?</a> &nbsp; | &nbsp; -->
+                                            <a href="requestRest.php" id="RecoverPassword">Forgot your password?</a> &nbsp; | &nbsp;
                                             <a href="register.php" id="customer_register_link">Create account</a>
 
                                         </p>
@@ -245,9 +245,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </footer>
     <!--End Footer-->
-    <!--Scoll Top-->
-    <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span>
-    <!--End Scoll Top-->
+    <!-- Scoll Top-->
+    <!-- <span id="site-scroll"><i class="icon anm anm-angle-up-r"></i></span> -->
+    <!--End Scoll Top -->
 
     <!-- Including Jquery -->
     <script src="assets/js/vendor/jquery-3.3.1.min.js"></script>

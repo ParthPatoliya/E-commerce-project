@@ -65,7 +65,7 @@ if ($num == 1) {
                 </div>
                 <div class="nav-item dropdown ">
                     <a href="#" class="nav-link dropdown-toggle me-lg-5" data-bs-toggle="dropdown">
-                        <img class="rounded-circle me-lg-4" src="img/user.jpeg" alt="" style="width: 40px; height: 40px;">
+                        <img class="rounded-circle me-lg-4" src="img/user.jpeg" alt="img not found" style="width: 40px; height: 40px;">
                         <span class="d-none d-lg-inline-flex me-lg-0 "><?php echo $row['company_name']; ?></span>
 
                     </a>

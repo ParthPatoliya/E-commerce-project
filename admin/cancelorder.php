@@ -20,7 +20,7 @@
     // LEFT OUTER JOIN sales_order ON sales_order_detail.Sales_Order_idSales_Order =idSales_Order 
     // LEFT OUTER JOIN product_master on Product_Master_idProduct_Master  =product_master.idProduct_Master 
     // WHERE sales_order.Retailer_idRetailer =$id";
-    $selectSalesOrder = "SELECT * FROM sales_order WHERE is_cancel=1 ORDER by idSales_Order DESC ";
+    $selectSalesOrder = "SELECT * FROM sales_order NATURAL JOIN retailer WHERE sales_order.Retailer_idRetailer=retailer.idRetailer AND is_cancel=1 ORDER BY idSales_Order DESC";
     $res = mysqli_query($conn, $selectSalesOrder);
     // echo $id;
 
@@ -31,7 +31,7 @@
     <thead>
     <tr>
     <th scope="col">Order No.</th>
-    <th scope="col">Retailer ID :</th>
+    <th scope="col">Retailer Name :</th>
     <th scope="col">Price :</th>
     <th scope="col">Total Qty :</th>
     <th scope="col">Order Date :</th>
@@ -45,7 +45,7 @@
       while ($saleOrderRow = mysqli_fetch_assoc($res)) {
         $str .= '<tbody>
         <th scope="row">' . $saleOrderRow['idSales_Order'] . '</th>
-        <th scope="row">' . $saleOrderRow['Retailer_idRetailer'] . '</th>
+        <th scope="row">' . $saleOrderRow['first_name'] . ' ' . $saleOrderRow['last_name'] . '</th>
         <th>' . $saleOrderRow['Total_Amount'] . '</th>
          <th scope="row">' . $saleOrderRow['Net_Qty'] . '</th>
         <th>' . $saleOrderRow["Sales_Order_Date"] . '</th>

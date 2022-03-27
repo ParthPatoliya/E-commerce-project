@@ -12,6 +12,7 @@ if (isset($_GET['idRetailer'])) {
     $id = $_COOKIE['idRetailer'];
     $sql = "SELECT * FROM wishlist NATURAL join product_master WHERE wishlist.Retailer_idRetailer=$id and wishlist.Product_Master_idProduct_Master=product_master.idProduct_Master";
     $result = mysqli_query($conn, $sql);
+    $resultCheck = mysqli_num_rows($result);
     //  $rows=mysqli_num_rows($result);
     // $row = mysqli_fetch_array($result);
 
@@ -56,13 +57,16 @@ if (isset($_GET['idRetailer'])) {
                             </thead>
 
                             <?php
-                            while ($row = mysqli_fetch_array($result)) {
-                                if ($row['Product_Qty'] > 0) {
-                                    $status = "In Stock";
-                                } else {
-                                    $status = "Out of Stock";
-                                }
-                                echo '
+                            if ($resultCheck > 0) {
+
+
+                                while ($row = mysqli_fetch_array($result)) {
+                                    if ($row['Product_Qty'] > 0) {
+                                        $status = "In Stock";
+                                    } else {
+                                        $status = "Out of Stock";
+                                    }
+                                    echo '
                                     <tbody> 
                                         
                                         <tr>
@@ -89,6 +93,9 @@ if (isset($_GET['idRetailer'])) {
                                        
                                     </tbody> 
                                    ';
+                                }
+                            } else {
+                                echo '<br><h1>No Items in Wishlist</h1><br>';
                             } ?>
                         </table>
                     </div>

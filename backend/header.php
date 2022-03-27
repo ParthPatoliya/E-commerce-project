@@ -183,7 +183,7 @@
           <div class="container-fluid">
               <div class="row">
                   <div class="col-10 col-sm-8 col-md-5 col-lg-4">
-                      <p class="phone-no"><i class="anm anm-phone-s"></i>+91 9016485585</p>
+                      <p class="phone-no"><i class="anm anm-phone-s"></i>+91 90164 85585</p>
                   </div>
 
                   <div class="col-sm-4 col-md-4 col-lg-4 d-none d-lg-none d-md-block d-lg-block">

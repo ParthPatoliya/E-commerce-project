@@ -31,6 +31,7 @@
 
     ?>
     <div class="p-2 mb-2 border-5 me-lg-5">
+     
       <div class="ms-3">
         <!-- <h3 align="center">Datatables Jquery Plugin with Php MySql and Bootstrap</h3>   -->
         <br />

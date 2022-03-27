@@ -54,8 +54,8 @@ include "backend/header.php";
             $total1 = $num8 * 5;
             $avrage = ($total / $total1) * 10;
             $avrage1 = number_format($avrage);
-            echo  $total;
-            echo $total1;
+            // echo  $total;
+            // echo $total1;
             // echo $avrage;
             // echo $avrage1;
         }
