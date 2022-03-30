@@ -28,7 +28,7 @@
       echo '<table class="table table-striped">
     <thead>
     <th scope="col">Order No.</th>
-    <th scope="col">Retailer ID :</th>                                
+    <th scope="col">Retailer Name :</th>                                
     <th scope="col">Reason :</th> 
     <th scope="col">Replace Date :</th>
     <th scope="col">See More :</th>

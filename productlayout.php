@@ -164,9 +164,10 @@ include "backend/header.php";
                                     <div class="product-review">
                                         <a class="reviewLink" href="#tab2">
 
-                                            <span class="reviewScore"><?php echo substr(number_format($rate_value, 1), 0, 3); ?></span>
+
                                             <?php
                                             if (mysqli_num_rows($result9) > 0) {
+                                                echo ' <span class="reviewScore">' . substr(number_format($rate_value, 1), 0, 3) . '</span>';
                                                 if ($rate_value < 3) {
                                                     echo '<svg height=30 width=23 class="star rating" data-rating="1">
                                                                             <polygon fill="red" points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
@@ -180,9 +181,10 @@ include "backend/header.php";
                                                                             <polygon fill="gold" points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
                                                                             </svg>&nbsp;';
                                                 }
+                                                echo ' <span class="reviewCount">(' . $rate_times . ' reviews)</span>';
                                             }
                                             ?>
-                                            <span class="reviewCount">(<?php echo $rate_times; ?> reviews)</span>
+
 
                                         </a>
                                     </div>
@@ -354,9 +356,10 @@ include "backend/header.php";
                                                                     <!-- <svg height=23 width=23 class="star rating" data-rating="1">
                                                                         <polygon fill='blank' points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
                                                                     </svg>&nbsp; -->
-                                                                    <span class="reviewScore"><?php echo substr(number_format($rate_value, 1), 0, 3); ?></span>
+
                                                                     <?php
                                                                     if (mysqli_num_rows($result9) > 0) {
+                                                                        echo ' <span class="reviewScore">' . substr(number_format($rate_value, 1), 0, 3) . '</span>';
                                                                         if ($rate_value < 3) {
                                                                             echo '<svg height=30 width=23 class="star rating" data-rating="1">
                                                                             <polygon fill="red" points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
@@ -370,9 +373,10 @@ include "backend/header.php";
                                                                             <polygon fill="gold" points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
                                                                             </svg>&nbsp;';
                                                                         }
+                                                                        echo ' <span class="reviewCount">(' . $rate_times . ' reviews)</span>';
                                                                     }
                                                                     ?>
-                                                                    <span class="reviewCount">(<?php echo $rate_times; ?> reviews)</span>
+
                                                                     <!-- <span class="spr-summary-actions">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                                                                 <a href="#new-review-form" class="spr-summary-actions-newreview btn">Write a review</a>
                                                             </span> -->
