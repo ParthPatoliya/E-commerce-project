@@ -12,6 +12,8 @@ $id = $_COOKIE['idRetailer'];
 $sql = "SELECT * FROM `sales_order` WHERE Retailer_idRetailer=$id ORDER by idSales_Order DESC";
 $ress = mysqli_query($conn, $sql);
 $num4 = mysqli_num_rows($ress);
+error_reporting(0);
+ini_set('display_errors', 0);
 
 ?>
 

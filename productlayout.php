@@ -28,36 +28,51 @@ include "backend/header.php";
         $sql8 = "SELECT * FROM `feedback` JOIN product_master on feedback.Product_Master_idProduct_Master=product_master.idProduct_Master JOIN `retailer` on feedback.Retailer_idRetailer=retailer.idRetailer  WHERE product_master.idProduct_Master=$id";
         $result8 = mysqli_query($conn, $sql8);
         $num8 = mysqli_num_rows($result8);
-        $sql9 = "SELECT * FROM `feedback` WHERE feedback.Product_Master_idProduct_Master =$id ";
+        $sql9 = "SELECT * FROM `feedback` WHERE feedback.Product_Master_idProduct_Master =$id";
         $result9 = mysqli_query($conn, $sql9);
         if (mysqli_num_rows($result9) > 0) {
-            $r1 = 0;
-            $r2 = 0;
-            $r3 = 0;
-            $r4 = 0;
-            $r5 = 0;
-            while ($row9 = mysqli_fetch_assoc($result9)) {
-                if ($row9['rating_value'] == 1) {
-                    $r1++;
-                } elseif ($row9['rating_value'] == 2) {
-                    $r2++;
-                } elseif ($row9['rating_value'] == 3) {
-                    $r3++;
-                } elseif ($row9['rating_value'] == 4) {
-                    $r4++;
-                } elseif ($row9['rating_value'] == 5) {
-                    $r5++;
-                }
+            while ($data = mysqli_fetch_assoc($result9)) {
+                $rate_db[] = $data;
+                $sum_rates[] = $data['rating_value'];
             }
-
-            $total = $r1 + $r2 + $r3 + $r4 + $r5;
-            $total1 = $num8 * 5;
-            $avrage = ($total / $total1) * 10;
-            $avrage1 = number_format($avrage);
+            if (count($rate_db)) {
+                $rate_times = count($rate_db);
+                $sum_rates = array_sum($sum_rates);
+                $rate_value = $sum_rates / $rate_times;
+                $rate_bg = (($rate_value) / 5) * 100;
+            } else {
+                $rate_times = 0;
+                $rate_value = 0;
+                $rate_bg = 0;
+            }
+            // $r1 = 0;
+            // $r2 = 0;
+            // $r3 = 0;
+            // $r4 = 0;
+            // $r5 = 0;
+            // // $total = 0;
+            // while ($row9 = mysqli_fetch_assoc($result9)) {
+            //     if ($row9['rating_value'] == 1) {
+            //         $r1++;
+            //     } elseif ($row9['rating_value'] == 2) {
+            //         $r2++;
+            //     } elseif ($row9['rating_value'] == 3) {
+            //         $r3++;
+            //     } elseif ($row9['rating_value'] == 4) {
+            //         $r4++;
+            //     } elseif ($row9['rating_value'] == 5) {
+            //         $r5++;
+            //     }
+            // }
+            // $total = $r1 + $r2 + $r3 + $r4 + $r5;
+            // $total1 = $num8 * 5;
+            // $avrage = ($total / $total1) * 10;
+            // $avrage1 = number_format($avrage);
             // echo  $total;
             // echo $total1;
-            // echo $avrage;
-            // echo $avrage1;
+            //  echo $num8;
+            // echo $rate_bg;
+            // echo number_format($rate_value, 1);
         }
 
         ?>
@@ -77,20 +92,20 @@ include "backend/header.php";
 
                                         //<!-- product -->
                                         echo '
-                            
+
 							<div class="col-12 item">
 								<div class="product-image">
-                               
+
 									<div class="product-image">
-                                    
-										           
+
+
 								</div>
-							
+
 					            <!-- ----------------------------- -->
-                                
+
                                             <img class="blur-up lazyload zoompro" data-zoom-image="admin/' . $row['image_url'] . '" alt="not found" src="admin/' . $row['image_url'] . '" width="90%" />
                                         </div>
-                                        
+
                                     </div>
                                     <div class="product-thumb product-thumb-1">
                                         <!-- <div id="gallery" class="product-dec-slider-1 product-tab-left">
@@ -149,22 +164,26 @@ include "backend/header.php";
                                     <div class="product-review">
                                         <a class="reviewLink" href="#tab2">
 
+                                            <span class="reviewScore"><?php echo substr(number_format($rate_value, 1), 0, 3); ?></span>
                                             <?php
                                             if (mysqli_num_rows($result9) > 0) {
-
-                                                $g = $avrage1;
-                                                for ($i = 0; $i < $g; $i++) {
-                                                    echo '
-                                                        <i class="font-13 fa fa-star"></i>';
-                                                }
-                                                $h = 5 - $g;
-                                                for ($j = 0; $j < $h; $j++) {
-                                                    echo '
-                                                        <i class="fa fa-star-o empty"></i>';
+                                                if ($rate_value < 3) {
+                                                    echo '<svg height=30 width=23 class="star rating" data-rating="1">
+                                                                            <polygon fill="red" points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
+                                                                            </svg>&nbsp;';
+                                                } elseif ($rate_value == 3) {
+                                                    echo '<svg height=20 width=20 class="star rating" data-rating="1">
+                                                                            <polygon fill="green" points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
+                                                                            </svg>&nbsp;';
+                                                } else {
+                                                    echo '<svg height=20 width=20 class="star rating" data-rating="1">
+                                                                            <polygon fill="gold" points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
+                                                                            </svg>&nbsp;';
                                                 }
                                             }
                                             ?>
-                                            <span class="spr-badge-caption"><b> <?php echo $count ?> : Reviews</span>
+                                            <span class="reviewCount">(<?php echo $rate_times; ?> reviews)</span>
+
                                         </a>
                                     </div>
                                     <!-- -------------------------------------------------------- -->
@@ -188,56 +207,56 @@ include "backend/header.php";
                                             $Product_Qty = "Out of stock";
                                         }
 
-                                        echo '   
-                           
+                                        echo '
+
                                     <h1 class="product-single__title"> ' . $Product_Name . '  </h1>
-                                    
-                          
+
+
                                     <div class="prInfoRow">
                                         <div class="product-stock"> <span class="instock ">' . $Product_Qty . '</span> <span class="outstock hide">Unavailable</span> </div>
-                                      
+
                                     </div>
                                     <p class="product-single__price product-single__price-product-template">
                                         <span class="visually-hidden">Regular price</span>
-                                       
+
                                         <span class="product-price__price product-price__price-product-template product-price__sale product-price__sale--single">
                                             <span id="ProductPrice-product-template"><span class="money">₹' . $Product_Price . '<small>.00</small></span></span>
                                         </span>
-                                        
+
                                     </p>
                                     <div class="product-single__description rte">
                                         <p>' . $Product_Details . '</p>
                                     </div>
-                          
+
                                     <form method="post" >
                                         <div class="swatch clearfix swatch-0 option1" data-option-index="0">
                                             <div class="product-form__item">
                                                 <label class="header">Color: <span class="slVariant">' . $Product_colors . '</span></label>
-                                                
+
                                             </div>
                                         </div>
-                                        
+
                                         <div class="swatch clearfix swatch-1 option2" data-option-index="1">
                                             <div class="product-form__item">
                                                 <label class="header">Size: <span class="slVariant">' . $Product_Size . '</span></label>
-                                               
+
                                             </div>
                                         </div>
-                                       
+
                                         <!-- Product Action -->
                                         <div class="product-action clearfix">
                                                        <div class="wrapQtyBtn">
-                                                        <span class="label">Qty:</span> 
+                                                        <span class="label">Qty:</span>
                                            <div class="qtyField">
-                                                   
+
                                                     <a class="qtyBtn minus" href="javascript:void(3);"><i class="fa anm anm-minus-r" aria-hidden="true"></i></a>
                                                     <input type="text" id="Quantity" name="qty" value="3" class="product-form__input qty">
                                                     <a class="qtyBtn plus" href="javascript:void(3);"><i class="fa anm anm-plus-r" aria-hidden="true"></i></a>
                                                 </div>
-                                         </div> 
+                                         </div>
                                                 </div>
                                             </div>
-                                   
+
                                                 <div class="product-form__item--submit">
                                            <a href="productlayout.php?idRetailer=' . $_COOKIE['idRetailer'] . '' . '&idProduct=' . $_GET['idProduct'] . '">
                                                     <button type="submit" name="addtocart" class="btn product-form__cart-submit">
@@ -245,21 +264,21 @@ include "backend/header.php";
                                             </button>
                                                 </a>
                                             </div>
-                                         
-                                               
-                                              
+
+
+
                                             </div>
                                         </div>
                                         <!-- End Product Action -->
                                            </form>
-                                                                            
+
                                     <div class="display-table shareRow">
                                         <div class="display-table-cell medium-up--one-third">
                                             <div class="wishlist-btn">
                                                 <a class="wishlist add-to-wishlist" href="index.php?idRetailer=' . $rows['idRetailer'] . '' . '&idProduct=' . $row['idProduct_Master'] . '" title="Add to Wishlist">
                                                 <i class="icon anm anm-heart-l" aria-hidden="true"></i> <span>Add to Wishlist</span></a>
                                             </div>
-                                           
+
                                             ';
                                     }
                                     ?>
@@ -308,8 +327,6 @@ include "backend/header.php";
                                 }
                             }
 
-
-
                         ?>
                             <!-- review code end -->
 
@@ -321,8 +338,8 @@ include "backend/header.php";
                                     <!-- <div id="tab1" class="tab-content">
                                             <div class="product-description rte">
                                                 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industr.</p>
-                                             
-                                           
+
+
                                             </div>
                                         </div> -->
                                     <h3 class="acor-ttl" rel="tab2">Product Reviews</h3>
@@ -331,38 +348,45 @@ include "backend/header.php";
                                             <div class="spr-container">
                                                 <div class="spr-header clearfix">
                                                     <div class="spr-summary">
-                                                        <span class="product-review"><a class="reviewLink">
-                                                                <?php
-                                                                if (mysqli_num_rows($result9) > 0) {
-
-                                                                    $g = $avrage1;
-                                                                    for ($i = 0; $i < $g; $i++) {
-                                                                        echo '
-                                                        <i class="fa fa-star"></i>';
+                                                        <span class="product-review">
+                                                            <div style="margin-top: 10px">
+                                                                <div class="result-container">
+                                                                    <!-- <svg height=23 width=23 class="star rating" data-rating="1">
+                                                                        <polygon fill='blank' points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
+                                                                    </svg>&nbsp; -->
+                                                                    <span class="reviewScore"><?php echo substr(number_format($rate_value, 1), 0, 3); ?></span>
+                                                                    <?php
+                                                                    if (mysqli_num_rows($result9) > 0) {
+                                                                        if ($rate_value < 3) {
+                                                                            echo '<svg height=30 width=23 class="star rating" data-rating="1">
+                                                                            <polygon fill="red" points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
+                                                                            </svg>&nbsp;';
+                                                                        } elseif ($rate_value == 3) {
+                                                                            echo '<svg height=20 width=20 class="star rating" data-rating="1">
+                                                                            <polygon fill="green" points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
+                                                                            </svg>&nbsp;';
+                                                                        } else {
+                                                                            echo '<svg height=20 width=20 class="star rating" data-rating="1">
+                                                                            <polygon fill="gold" points="9.9, 1.1, 3.3, 21.78, 19.8, 8.58, 0, 8.58, 16.5, 21.78" style="fill-rule:nonzero;" />
+                                                                            </svg>&nbsp;';
+                                                                        }
                                                                     }
-                                                                    $h = 5 - $g;
-                                                                    for ($j = 0; $j < $h; $j++) {
+                                                                    ?>
+                                                                    <span class="reviewCount">(<?php echo $rate_times; ?> reviews)</span>
+                                                                    <!-- <span class="spr-summary-actions">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                                                <a href="#new-review-form" class="spr-summary-actions-newreview btn">Write a review</a>
+                                                            </span> -->
+                                                                </div>
+                                                            </div>
+                                                            <div class="spr-content">
+                                                                <div class="spr-form clearfix">
+                                                                    <form method="post" id="new-review-form" class="new-review-form">
+                                                                        <h3 class="spr-form-title">Write a review</h3>
+                                                                        <?php
+                                                                        $abc = "SELECT * FROM retailer WHERE retailer.idRetailer=" . $_COOKIE['idRetailer'] . "";
+                                                                        $resultabc = mysqli_query($conn, $abc);
+                                                                        $rowww = mysqli_fetch_assoc($resultabc);
                                                                         echo '
-                                                        <i class="fa fa-star-o empty"></i>';
-                                                                    }
-                                                                }
-                                                                ?>
-                                                            </a><span class="spr-summary-actions-togglereviews">Based on <?php echo $count ?> reviews</span></span>
-
-                                                        <span class="spr-summary-actions">
-                                                            <a href="#new-review-form" class="spr-summary-actions-newreview btn">Write a review</a>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="spr-content">
-                                                    <div class="spr-form clearfix">
-                                                        <form method="post" id="new-review-form" class="new-review-form">
-                                                            <h3 class="spr-form-title">Write a review</h3>
-                                                            <?php
-                                                            $abc = "SELECT * FROM retailer WHERE retailer.idRetailer=" . $_COOKIE['idRetailer'] . "";
-                                                            $resultabc = mysqli_query($conn, $abc);
-                                                            $rowww = mysqli_fetch_assoc($resultabc);
-                                                            echo '
                                                                 <fieldset class="spr-form-contact">
                                                                     <div class="spr-form-contact-name">
                                                                         <label class="spr-form-label" for="review_author_10508262282">Name</label>
@@ -373,85 +397,82 @@ include "backend/header.php";
                                                                         <input class="spr-form-input spr-form-input-email " name="email" id="review_email_10508262282" type="email"  value="' . $rowww['E-mail'] . '" >
                                                                     </div>
                                                                 </fieldset>';
-                                                            // }
-                                                            ?>
-                                                            <fieldset class="spr-form-review">
-                                                                <div class="spr-form-review-rating">
-                                                                    <label class="spr-form-label">Rating</label>
-                                                                    <div class="spr-form-input spr-starrating">
-                                                                        <div class="product-review">
+                                                                        // }
+                                                                        ?>
+                                                                        <fieldset class="spr-form-review">
+                                                                            <div class="spr-form-review-rating">
+                                                                                <label class="spr-form-label">Rating</label>
+                                                                                <div class="spr-form-input spr-starrating">
+                                                                                    <div class="product-review">
 
-                                                                            <input type="radio" id="rat" name="rate" value="1">1<i class="fa fa-star fa-2x"></i>
-                                                                            <input type="radio" id="rat" name="rate" value="2">2<i class="fa fa-star fa-2x"></i>
-                                                                            <input type="radio" id="rat" name="rate" value="3">3<i class="fa fa-star fa-2x"></i>
-                                                                            <input type="radio" id="rat" name="rate" value="4">4<i class="fa fa-star fa-2x"></i>
-                                                                            <input type="radio" id="rat" name="rate" value="5">5<i class="fa fa-star fa-2x"></i>
-                                                                        </div>
-                                                                    </div>
+                                                                                        <input type="radio" id="rat" name="rate" value="1">1<i class="fa fa-star fa-2x"></i>
+                                                                                        <input type="radio" id="rat" name="rate" value="2">2<i class="fa fa-star fa-2x"></i>
+                                                                                        <input type="radio" id="rat" name="rate" value="3">3<i class="fa fa-star fa-2x"></i>
+                                                                                        <input type="radio" id="rat" name="rate" value="4">4<i class="fa fa-star fa-2x"></i>
+                                                                                        <input type="radio" id="rat" name="rate" value="5">5<i class="fa fa-star fa-2x"></i>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="spr-form-review-title">
+                                                                                <label class="spr-form-label" for="review_title_10508262282">Review Title</label>
+                                                                                <input class="spr-form-input spr-form-input-text " name="Title" id="review_title_10508262282" type="text" name="review[title]" value="" placeholder="Give your review a title" required>
+                                                                            </div>
+
+                                                                            <div class="spr-form-review-body">
+                                                                                <label class="spr-form-label" for="review_body_10508262282">Body of Review <span class="spr-form-review-body-charactersremaining">(1500)</span></label>
+                                                                                <div class="spr-form-input">
+                                                                                    <textarea class="spr-form-input spr-form-input-textarea " name="Desc" id="review_body_10508262282" data-product-id="10508262282" name="review[body]" rows="10" placeholder="Write your comments here" required></textarea>
+                                                                                </div>
+                                                                            </div>
+                                                                        </fieldset>
+                                                                        <fieldset class="spr-form-actions">
+                                                                            <input type="submit" name="addtoreview" class="spr-button spr-button-primary button button-primary btn btn-primary" value="Submit Review">
+                                                                        </fieldset>
+                                                                    </form>
                                                                 </div>
+                                                                <div class="spr-reviews">
+                                                                    <div class="spr-review">
+                                                                    <?php
 
-                                                                <div class="spr-form-review-title">
-                                                                    <label class="spr-form-label" for="review_title_10508262282">Review Title</label>
-                                                                    <input class="spr-form-input spr-form-input-text " name="Title" id="review_title_10508262282" type="text" name="review[title]" value="" placeholder="Give your review a title" required>
-                                                                </div>
+                                                                    while ($rowww = mysqli_fetch_assoc($resulttt)) {
 
-                                                                <div class="spr-form-review-body">
-                                                                    <label class="spr-form-label" for="review_body_10508262282">Body of Review <span class="spr-form-review-body-charactersremaining">(1500)</span></label>
-                                                                    <div class="spr-form-input">
-                                                                        <textarea class="spr-form-input spr-form-input-textarea " name="Desc" id="review_body_10508262282" data-product-id="10508262282" name="review[body]" rows="10" placeholder="Write your comments here" required></textarea>
-                                                                    </div>
-                                                                </div>
-                                                            </fieldset>
-                                                            <fieldset class="spr-form-actions">
-                                                                <input type="submit" name="addtoreview" class="spr-button spr-button-primary button button-primary btn btn-primary" value="Submit Review">
-                                                            </fieldset>
-                                                        </form>
-                                                    </div>
-                                                    <div class="spr-reviews">
-                                                        <div class="spr-review">
-                                                        <?php
-
-                                                        while ($rowww = mysqli_fetch_assoc($resulttt)) {
-
-
-
-                                                            echo ' <div class="spr-review-header">
+                                                                        echo ' <div class="spr-review-header">
                                                                 <a href="deletefeedback.php?idProduct=' . $_GET['idProduct'] . '&idFeedback=' . $rowww['idFeedback'] . '" class="remove" ><i class="anm anm-times-l" aria-hidden="true"></i></a>&nbsp &nbsp &nbsp
                                                                 <span class="product-review spr-starratings spr-review-header-starratings">
                                                                 <span class="reviewLink">';
-                                                            $p = $rowww["rating_value"];
-                                                            for ($i = 0; $i < $p; $i++) {
-                                                                echo '
+                                                                        $p = $rowww["rating_value"];
+                                                                        for ($i = 0; $i < $p; $i++) {
+                                                                            echo '
                                                        <i class="fa fa-star fa-2x"></i>';
-                                                            }
-                                                            $q = 5 - $p;
-                                                            for ($j = 0; $j < $q; $j++) {
-                                                                echo '
+                                                                        }
+                                                                        $q = 5 - $p;
+                                                                        for ($j = 0; $j < $q; $j++) {
+                                                                            echo '
                                                         <i class="fa fa-star-o empty"></i>';
-                                                            }
+                                                                        }
 
-
-                                                            echo '  </span></span>
+                                                                        echo '  </span></span>
                                                                     <h3 class="spr-review-header-title">' . $rowww['Title'] . '</h3>
                                                                     <span class="spr-review-header-byline"><strong>' . $rowww['Name'] . '</strong> on <strong>' . $rowww['Feedback_Date'] . '</strong></span>
                                                                 </div>
                                                                 <div class="spr-review-content">
                                                                     <p class="spr-review-content-body">' . $rowww['Desc'] . '</p>
                                                                 </div>
-                                                         
-                                                            
-                                                        ';
-                                                        }
-                                                    } ?>
 
-                                                        </div>
+
+                                                        ';
+                                                                    }
+                                                                } ?>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
 
-                                    <!-- <h3 class="acor-ttl" rel="tab4">Shipping &amp; Returns</h3>
+                                            <!-- <h3 class="acor-ttl" rel="tab4">Shipping &amp; Returns</h3>
                                         <div id="tab4" class="tab-content">
                                             <h4>Returns Policy</h4>
                                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce eros justo, accumsan non dui sit amet. Phasellus semper volutpat mi sed imperdiet. Ut odio lectus, vulputate non ex non, mattis sollicitudin purus.
@@ -462,52 +483,51 @@ include "backend/header.php";
                                                 Integer sit amet tincidunt tortor. Ut lacinia ullamcorper massa, a fermentum arcu vehicula ut. Ut efficitur faucibus dui Nullam tristique dolor eget turpis consequat varius. Quisque a interdum augue. Nam
                                                 ut nibh mauris.</p>
                                         </div> -->
+                                        </div>
+                                    </div>
+                                    <!--End Product Tabs-->
                                 </div>
                             </div>
-                            <!--End Product Tabs-->
-                    </div>
-                </div>
-                <!--End-product-single-->
+                            <!--End-product-single-->
 
-                <!--Related Product Slider-->
-                <!--Collection Tab slider-->
-                <div class="tab-slider-product section">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
-                                <div class="section-header text-center">
-                                    <h2 class="h2">Related Products</h2>
-                                    <p>Browse the huge variety of our products</p>
-                                </div>
-                                <div class="tabs-listing">
-                                    <?php
-
-
-                                    $sql = "SELECT * FROM `product_master`;";
-
-                                    $result = mysqli_query($conn, $sql);
-                                    //  $num = mysqli_num_rows($result);
-                                    ?>
-                                    <div class="tab_container">
-                                        <div id="tab1" class="tab_content grid-products">
-                                            <div class="productSlider">
-
-
-                                                <!-- start product image -->
-
-                                                <!-- start product image -->
+                            <!--Related Product Slider-->
+                            <!--Collection Tab slider-->
+                            <div class="tab-slider-product section">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                            <div class="section-header text-center">
+                                                <h2 class="h2">Related Products</h2>
+                                                <p>Browse the huge variety of our products</p>
+                                            </div>
+                                            <div class="tabs-listing">
                                                 <?php
 
-                                                while ($row = mysqli_fetch_assoc($result)) {
+                                                $sql = "SELECT * FROM `product_master`;";
 
-                                                    //<!-- product -->
-                                                    echo '
-                            
+                                                $result = mysqli_query($conn, $sql);
+                                                //  $num = mysqli_num_rows($result);
+                                                ?>
+                                                <div class="tab_container">
+                                                    <div id="tab1" class="tab_content grid-products">
+                                                        <div class="productSlider">
+
+
+                                                            <!-- start product image -->
+
+                                                            <!-- start product image -->
+                                                            <?php
+
+                                                            while ($row = mysqli_fetch_assoc($result)) {
+
+                                                                //<!-- product -->
+                                                                echo '
+
 							<div class="col-12 item">
 								<div class="product-image">
-            
+
 									<div class="product-image">
-                                 
+
 										<a href="productlayout.php?idRetailer=' . $rows["idRetailer"] . '' . '&idProduct=' . $row["idProduct_Master"] . '"><img src="admin/' . $row['image_url'] . '" alt="image not found" height=400px width=100px>
 									  </a>
                                     </div>
@@ -515,9 +535,9 @@ include "backend/header.php";
                                            <a  href="productlayout.php?idRetailer=' . $rows["idRetailer"] . '' . '&idProduct=' . $row["idProduct_Master"] . '">
                                              <button  type="button" name="idRetailer"> Add To Wishlist</button>
                                              </a>
-                                            </div> 
+                                            </div>
 									<div class="product-body">
-										
+
 										<h2 class="product-name"><b>' . $row['Product_Name'] . '</b></a></h2>
 										<h3 class="price">Color :- ' . $row['Product_colors'] . '</h3>
 										<h3 class="product-size"> Size :- ' . $row['Product_Size'] . '</h3>
@@ -525,133 +545,133 @@ include "backend/header.php";
 									<form method="post">
 									</div><a href="productlayout.php?idRetailer=' . $rows["idRetailer"] . '' . '&idProduct=' . $row["idProduct_Master"] . '">
 								       <button class="btn btn-addto-cart" type="button"  tabindex="0">Add To Cart</button>
-                                            </a>            
+                                            </a>
 								</div>
                                 </form>
 							</div>
 							<!-- /product -->';
-                                                }
+                                                            }
 
-                                                ?>
-                                                <!-- end product image -->
+                                                            ?>
+                                                            <!-- end product image -->
 
+
+                                                        </div>
+                                                        <!-- end product image -->
+
+
+                                                    </div>
+                                                </div>
 
                                             </div>
-                                            <!-- end product image -->
 
-
+                                            <!-- -------------------------------------------------------------------------------- -->
                                         </div>
                                     </div>
-
                                 </div>
+                            </div>
+                            <!--Collection Tab slider-->
+                            <!--End  Related Product Slider-->
 
-                                <!-- -------------------------------------------------------------------------------- -->
+                    </div>
+                    <!--#ProductSection-product-template-->
+                </div>
+                <!--MainContent-->
+            </div>
+            <!--End Body Content-->
+        </div>
+        <!--Footer-->
+
+        <?php
+        include "backend/footer.php";
+        ?>
+        <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="pswp__bg"></div>
+            <div class="pswp__scroll-wrap">
+                <div class="pswp__container">
+                    <div class="pswp__item"></div>
+                    <div class="pswp__item"></div>
+                    <div class="pswp__item"></div>
+                </div>
+                <div class="pswp__ui pswp__ui--hidden">
+                    <div class="pswp__top-bar">
+                        <div class="pswp__counter"></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button><button class="pswp__button pswp__button--share" title="Share"></button><button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                        <div class="pswp__preloader">
+                            <div class="pswp__preloader__icn">
+                                <div class="pswp__preloader__cut">
+                                    <div class="pswp__preloader__donut"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!--Collection Tab slider-->
-                <!--End  Related Product Slider-->
 
-            </div>
-            <!--#ProductSection-product-template-->
-        </div>
-        <!--MainContent-->
-    </div>
-    <!--End Body Content-->
-</div>
-<!--Footer-->
-
-<?php
-include "backend/footer.php";
-?>
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="pswp__bg"></div>
-    <div class="pswp__scroll-wrap">
-        <div class="pswp__container">
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-        </div>
-        <div class="pswp__ui pswp__ui--hidden">
-            <div class="pswp__top-bar">
-                <div class="pswp__counter"></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button><button class="pswp__button pswp__button--share" title="Share"></button><button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-                <div class="pswp__preloader">
-                    <div class="pswp__preloader__icn">
-                        <div class="pswp__preloader__cut">
-                            <div class="pswp__preloader__donut"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
-
         </div>
-    </div>
-</div>
-<script>
-    //     var ratedIndex = -1,
-    //         uID = 0;
+        <script>
+            //     var ratedIndex = -1,
+            //         uID = 0;
 
-    //     $(document).ready(function() {
-    //         resetStarColors();
+            //     $(document).ready(function() {
+            //         resetStarColors();
 
-    //         if (localStorage.getItem('ratedIndex') != null) {
-    //             setStars(parseInt(localStorage.getItem('ratedIndex')));
-    //             uID = localStorage.getItem('uID');
-    //         }
+            //         if (localStorage.getItem('ratedIndex') != null) {
+            //             setStars(parseInt(localStorage.getItem('ratedIndex')));
+            //             uID = localStorage.getItem('uID');
+            //         }
 
-    //         $('.fa-star').on('click', function() {
-    //             ratedIndex = parseInt($(this).data('index'));
-    //             localStorage.setItem('ratedIndex', ratedIndex);
-    //             saveToTheDB();
-    //         });
+            //         $('.fa-star').on('click', function() {
+            //             ratedIndex = parseInt($(this).data('index'));
+            //             localStorage.setItem('ratedIndex', ratedIndex);
+            //             saveToTheDB();
+            //         });
 
-    //         $('.fa-star').mouseover(function() {
-    //             resetStarColors();
-    //             var currentIndex = parseInt($(this).data('index'));
-    //             setStars(currentIndex);
-    //         });
+            //         $('.fa-star').mouseover(function() {
+            //             resetStarColors();
+            //             var currentIndex = parseInt($(this).data('index'));
+            //             setStars(currentIndex);
+            //         });
 
-    //         $('.fa-star').mouseleave(function() {
-    //             resetStarColors();
+            //         $('.fa-star').mouseleave(function() {
+            //             resetStarColors();
 
-    //             if (ratedIndex != -1)
-    //                 setStars(ratedIndex);
-    //         });
-    //     });
+            //             if (ratedIndex != -1)
+            //                 setStars(ratedIndex);
+            //         });
+            //     });
 
-    //     function saveToTheDB() {
-    //         $.ajax({
-    //             url: "productlayout.php",
-    //             method: "POST",
-    //             dataType: 'json',
-    //             data: {
-    //                 save: 1,
-    //                 uID: uID,
-    //                 ratedIndex: ratedIndex
-    //             },
-    //             success: function(r) {
-    //                 uID = r.id;
-    //                 localStorage.setItem('uID', uID);
-    //             }
+            //     function saveToTheDB() {
+            //         $.ajax({
+            //             url: "productlayout.php",
+            //             method: "POST",
+            //             dataType: 'json',
+            //             data: {
+            //                 save: 1,
+            //                 uID: uID,
+            //                 ratedIndex: ratedIndex
+            //             },
+            //             success: function(r) {
+            //                 uID = r.id;
+            //                 localStorage.setItem('uID', uID);
+            //             }
 
-    //         });
-    //         // console.log(ratedIndex);
-    //     }
+            //         });
+            //         // console.log(ratedIndex);
+            //     }
 
-    //     function setStars(max) {
-    //         for (var i = 0; i <= max; i++)
-    //             $('.fa-star:eq(' + i + ')').css('color', 'green');
-    //     }
+            //     function setStars(max) {
+            //         for (var i = 0; i <= max; i++)
+            //             $('.fa-star:eq(' + i + ')').css('color', 'green');
+            //     }
 
-    //     function resetStarColors() {
-    //         $('.fa-star').css('color', 'gray');
-    //     }
-    // 
-</script>
-</body>
-<!-- <script type='text/javascript'>
+            //     function resetStarColors() {
+            //         $('.fa-star').css('color', 'gray');
+            //     }
+            //
+        </script>
+        </body>
+        <!-- <script type='text/javascript'>
     (function() {
         if (window.localStorage) {
             if (!localStorage.getItem('firstLoad')) {

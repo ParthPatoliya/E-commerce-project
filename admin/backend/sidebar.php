@@ -79,6 +79,7 @@
                    <a href="purchaseOrderdetails.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Purchase Orders</a>
                    <a href="salesReplace.php" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Replace Orders</a>
                    <a href="../admin/report/index.php" class="nav-item nav-link"><i class="far fa-file-alt me-2"></i>Sales Report</a>
+                   <a href="../admin/preport/index.php" class="nav-item nav-link"><i class="far fa-file-alt me-2"></i>Purchase Report</a>
 
                </div>
            </nav>
