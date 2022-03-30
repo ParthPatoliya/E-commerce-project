@@ -20,7 +20,8 @@
     // LEFT OUTER JOIN sales_order ON sales_order_detail.Sales_Order_idSales_Order =idSales_Order 
     // LEFT OUTER JOIN product_master on Product_Master_idProduct_Master  =product_master.idProduct_Master 
     // WHERE sales_order.Retailer_idRetailer =$id";
-    $sql3 = "SELECT * FROM sales_order LEFT OUTER JOIN sales_replace ON sales_replace.Sales_Order_idSales_Order = sales_order.idSales_Order WHERE sales_replace.idSales_Replace ORDER by idSales_Order DESC ";
+    // $sql3 = "SELECT * FROM sales_order LEFT OUTER JOIN sales_replace ON sales_replace.Sales_Order_idSales_Order = sales_order.idSales_Order WHERE sales_replace.idSales_Replace  ORDER by idSales_Order DESC ";
+    $sql3 = "SELECT * FROM sales_order NATURAL JOIN retailer LEFT OUTER JOIN sales_replace ON sales_replace.Sales_Order_idSales_Order = sales_order.idSales_Order WHERE sales_replace.idSales_Replace AND sales_order.Retailer_idRetailer=retailer.idRetailer ORDER by idSales_Order DESC";
     $res3 = mysqli_query($conn, $sql3);
     if (mysqli_num_rows($res3) > 0) {
 
@@ -35,15 +36,14 @@
       while ($row3 = mysqli_fetch_assoc($res3)) {
         echo '<tbody>
         <th scope="row">' . $row3['Sales_Order_idSales_Order'] . '</th>
-        <th scope="row">' . $row3['Retailer_idRetailer'] . '</th>
+        <th scope="row">' . $row3['first_name'] . ' ' . $row3['last_name'] . '</th>
         <th>' . $row3['Sales_Replace_Reason'] . '</th>
         <th>' . $row3["Sales_Replace_Date"] . '</th>
        
         <th scope="row"><a href="showOrderDetail.php?orderid=' . $row3['Sales_Order_idSales_Order'] . '">See More</th>
         ';
-       
       }
-       echo " </thead></tbody></table>";
+      echo " </thead></tbody></table>";
     }
 
     ?>
