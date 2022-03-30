@@ -55,10 +55,10 @@ ini_set('display_errors', 0);
                                     if ($row14['is_replace'] == 1) {
                                         $status = "Accepted" . "<br><b>Oreder Replace on :" . $row14['Sales_Replace_Date'] . " </b>
                                 &nbsp  &nbsp <a href='invoice.php?orderid=" . $row['idSales_Order'] . "'><button type='submit'><b>Download Invoice</b></button></a>";
-                                    } else {
-                                        $status = "Accepted" . "<br><b>Credit due date : ( " . date_format($date, "Y-m-d") . " )</b>
-                                &nbsp  &nbsp <a href='invoice.php?orderid=" . $row['idSales_Order'] . "'><button type='submit'><b>Download Invoice</b></button></a>";
                                     }
+                                } else {
+                                    $status = "Accepted" . "<br><b>Credit due date : ( " . date_format($date, "Y-m-d") . " )</b>
+                                &nbsp  &nbsp <a href='invoice.php?orderid=" . $row['idSales_Order'] . "'><button type='submit'><b>Download Invoice</b></button></a>";
                                 }
                             }
                             echo '
@@ -75,7 +75,7 @@ ini_set('display_errors', 0);
                                 echo '
                                 <th><a href="salesCancel.php?orderid=' . $row['idSales_Order'] . '" ><button type="button" class="btn btn-primary" >
                                                           Cancel</button></a><br> 
-                                                           </th>  ';
+                                                           </th><th></th>  ';
                             } else if ($row['is_cancel'] == 1) {
                             } else if ($row['is_cancel'] == 0) {
 
