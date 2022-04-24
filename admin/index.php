@@ -96,7 +96,7 @@
 
         <!-- Sale & Revenue End -->
         <?php
-        $selectSalesOrder = "SELECT * FROM `retailer` NATURAL JOIN sales_order WHERE retailer.idRetailer=sales_order.Retailer_idRetailer  AND sales_order.is_cancel=0  ORDER BY sales_order.Sales_Order_Date DESC";
+        $selectSalesOrder = "SELECT * FROM `retailer` NATURAL JOIN sales_order WHERE retailer.idRetailer=sales_order.Retailer_idRetailer  AND sales_order.is_cancel=0  ORDER BY sales_order.Sales_Order_Date DESC LIMIT 8";
         $res = mysqli_query($conn, $selectSalesOrder);
         // echo $id;
         // $find = "SELECT * FROM retailer WHERE idRetailer='" . $_COOKIE['idRetailer'] . "'";
